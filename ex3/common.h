@@ -8,7 +8,7 @@
 #define DEFAULT_PR 1.0
 #define WHITESPACES " \n\t\v\f\r"
 
-#define MAX_COMMAND_LENGTH	101 // Including \0
+#define MAX_COMMAND_LENGTH	501 // Including \0
 #define DAMP 0.85
 #define MIN_ITERATIONS 40
 #define MAX_CHANGE_PERCENTAGE 0.00001

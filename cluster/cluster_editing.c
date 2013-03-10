@@ -129,6 +129,8 @@ for(i=0;i<nV;i++)
 	prices[IDs[i][j]]=/*generate as a network function, integrate into matbeg*/
 }
 
+// matind is built by 
+
 for(i=0;i<nV;i++){
 	for(j=(i+1);j<nV;j++){
 		counter=0;
@@ -142,7 +144,7 @@ for(i=0;i<nV;i++){
 			matval[conIndices[i][j]+(offset[i][j]++)]=1;
 			matval[conIndices[i][j]+(offset[i][j]++)]=1;
 			matval[conIndices[i][j]+(offset[i][j]++)]=-1;
-			
+
 			/*"case" (i,j,k)---->(i,k,j)*/
 			matval[conIndices[i][k]+(offset[i][k]++)]=-1;
 			matval[conIndices[i][k]+(offset[i][k]++)]=1;
