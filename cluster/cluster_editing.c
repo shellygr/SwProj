@@ -80,7 +80,82 @@ int cluster()
    }
 
    /* Use CPXcopylp to transfer the ILP part of the problem data into the cplex pointer lp */   
+int nV=numOfVertices(network);
+int numCols =nV*(nV-1)/2 ,numRows=numCols*(nV-2);
+int counter,i,j,k,id;
 
+int **IDs=malloc(nV*sizeof(int*));
+int **offset=malloc(nV*sizeof(int*));
+int **conIndices=malloc(nV*sizeof(int*));/*MUST BE FREED LATER*/
+if(conIndeces==NULL){
+	printf("DRAGONS!!!");
+}
+for(i=0;i<nV;i++){
+	IDs[i]=malloc((nV-i-1)*sizeof(int));
+	conIndices[i]=malloc(3*(nV-i-1)*sizeof(int));/*malloc NULL check*/
+	offset[i]=malloc(3*(nV-2)*size(int));
+}
+for(i=0;i<nV;i++)
+	for(j=(i+1);j<nV;j++){
+		IDs[i][j]=id++;
+		offset[i][j]=0;
+		conIndices[i][j]=counter;
+		counter+=3*(nV-2);
+	}
+assert(counter==numRows);
+
+
+int obvsen=CPX_MIN;
+double *prices; /* Objective coeffs*/
+double *rhs; /* Target 1-1-1-1-1 */
+char *sense; /* "<= "=='L' */
+int *matbeg=malloc(numCols*sizeof(int)),*matind=malloc(numRows*sizeof(int)),*matcnt=malloc(numCols*sizeof(int));
+double *matval=malloc(numRows*sizeof(double));
+
+rhs=malloc(numRows*sizeof(double));
+sense=malloc(numRows*sizeof(char));
+prices=malloc(numCols*sizeof(double));
+/*MALLOC CHECKS FOR EVERYTHING!!*/
+if(sense==NULL||prices==NULL||rhs==NULL||matbeg==NULL||matind==NULL||matcnt==NULL||matval==NULL){
+
+}
+
+for(i=0;i<numRows;i++){
+	rhs[i]=1;
+	sense[i]='L';
+}
+for(i=0;i<nV;i++)
+	for(j=(i+1);j<nV;j++){
+	prices[IDs[i][j]]=/*generate as a network function, integrate into matbeg*/
+}
+
+for(i=0;i<nV;i++){
+	for(j=(i+1);j<nV;j++){
+		counter=0;
+		for(k=j+1;k<nV;k++){
+			if(k==i||k==j)
+				continue;
+			matbeg[counter]=conIndices[i][j];
+			matcnt[counter]=3*(nV-2);
+			
+			/*"case" (i,j,k)---->(i,j,k)*/
+			matval[conIndices[i][j]+(offset[i][j]++)]=1;
+			matval[conIndices[i][j]+(offset[i][j]++)]=1;
+			matval[conIndices[i][j]+(offset[i][j]++)]=-1;
+			
+			/*"case" (i,j,k)---->(i,k,j)*/
+			matval[conIndices[i][k]+(offset[i][k]++)]=-1;
+			matval[conIndices[i][k]+(offset[i][k]++)]=1;
+			matval[conIndices[i][k]+(offset[i][k]++)]=1;
+			
+			/*"case" (i,j,k)---->(k,i,j)*/
+			matval[conIndices[k][i]+(offset[k][i]++)]=1;
+			matval[conIndices[k][i]+(offset[k][i]++)]=-1;
+			matval[conIndices[k][i]+(offset[k][i]++)]=1;
+					
+		}
+	}	
+}
    /* Optimize the problem. */
    status = CPXmipopt (p_env, p_lp);
    if ( status ) {
@@ -138,5 +213,4 @@ void free_and_null (char **ptr)
       *ptr = NULL;
    }
 } 
-
 
