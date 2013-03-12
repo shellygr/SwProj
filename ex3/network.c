@@ -68,7 +68,7 @@ void print_edges(network *net) {
 	}
 }
 
-void get_prices_array(int nV,network *net,double **prices){
+void get_prices_array(network *net,double **prices){
 	int i,j,k;
 	vertex currVertex;
 	int counter=0;
