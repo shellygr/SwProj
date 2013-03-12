@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
 	
 	/* Assert inputs are good */
 	/* Num of arguments*/
-	if (argc < 4) {
+	if (argc != 4) {
 		send_error(-3);
 		exit(EXIT_FAILURE);
 	}
