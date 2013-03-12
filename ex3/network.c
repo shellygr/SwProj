@@ -67,6 +67,37 @@ void print_edges(network *net) {
 		}
 	}
 }
+
+void get_prices_array(int nV,network *net,double *prices){
+	int i,j,k;
+	vertex currVertex;
+	int counter=0;
+	vertex *vertices=(vertex*)(net->vertices);
+	vertex from,to;
+	edge *currNeighList;
+	for(int i=0;i<net->num_of_vetrtices;i++){
+		currVertex=vertices[i];
+		currNeighList=currVertex.incoming
+		for(k=0;k<currVertex.in_deg;k++){
+			from=currNeightList[k]->from;to=currNeightList[k]->to;
+			if(from.id==i&&to.id>i){
+				prices[counter+to.id-i]=currNeighList[k]->weight;
+			}else
+			if(to.id==i&&from.id>i){
+				prices[counter+from.id-i]=currNeighList[k]->weight;
+			}
+		}
+		counter+=(nV-i-1);
+	}
+}
+
+void get_id_array(network *net,int *id){
+	int i;
+	for(i=0;i<net->num_of_vertices;i++){
+		id[i]=i;
+	}
+}
+
 /*
 void print(network *net, int with_pr) {
 	vertex **v = (vertex **)net->vertices;
