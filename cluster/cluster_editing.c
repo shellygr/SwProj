@@ -106,18 +106,25 @@ assert(counter==numRows);
 
 
 int obvsen=CPX_MIN;
-double *prices; /* Objective coeffs*/
+double *prices,*lb,*up; /* Objective coeffs*/
 double *rhs; /* Target 1-1-1-1-1 */
 char *sense; /* "<= "=='L' */
 int *matbeg=malloc(numCols*sizeof(int)),*matind=malloc(numRows*sizeof(int)),*matcnt=malloc(numCols*sizeof(int));
 double *matval=malloc(numRows*sizeof(double));
+lb=malloc(numCols*sizeOf(dobule));
+ub=malloc(numCols*sizeOf(dobule));
 
 rhs=malloc(numRows*sizeof(double));
 sense=malloc(numRows*sizeof(char));
 prices=malloc(numCols*sizeof(double));
 /*MALLOC CHECKS FOR EVERYTHING!!*/
-if(sense==NULL||prices==NULL||rhs==NULL||matbeg==NULL||matind==NULL||matcnt==NULL||matval==NULL){
+if(sense==NULL||prices==NULL||rhs==NULL||matbeg==NULL||matind==NULL||matcnt==NULL||matval==NULL||lb==NULL||ub==NULL){
 
+}
+
+for(i=0;i<numCols;i++){
+	lb[i]=0;
+	ub[i]=2;
 }
 
 for(i=0;i<numRows;i++){
@@ -158,6 +165,10 @@ for(i=0;i<nV;i++){
 		}
 	}	
 }
+
+
+CPXcopylp(env,lp,numCols,numRows,objsen,obj,rhs,sense,matbeg,matcnt,matind,matval,lb,ub,NULL)
+
    /* Optimize the problem. */
    status = CPXmipopt (p_env, p_lp);
    if ( status ) {
