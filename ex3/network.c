@@ -91,10 +91,13 @@ void get_prices_array(int nV,network *net,double *prices){
 	}
 }
 
-void get_id_array(network *net,int *id){
-	int i;
-	for(i=0;i<net->num_of_vertices;i++){
-		id[i]=i;
+void get_id_array(int nV,network *net,int *id){
+	int i,j;
+	int counter=0;
+	for(i=0;i<;i++){
+		for(j=(i+1);j<nV;j++){
+			if[counter++]=counter;
+		}
 	}
 }
 
