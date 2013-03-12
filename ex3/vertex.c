@@ -36,7 +36,7 @@ vertex* init_vertex(char *name, int id) {
 	vrtx->name[strlen(name)]='\0';
 	vrtx->in_deg = 0;
 	vrtx->out_deg = 0;
-	vrtx->PR = DEFAULT_PR;
+	vrtx->cluster_id = -1;
 
 	return vrtx;
 }
