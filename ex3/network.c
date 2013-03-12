@@ -73,18 +73,18 @@ void get_prices_array(int nV,network *net,double **prices){
 	vertex currVertex;
 	int counter=0;
 	vertex *vertices=(vertex*)(net->vertices);
-	vertex from,to;
+	int from,to;
 	edge *currNeighList;
 	for(int i=0;i<net->num_of_vetrtices;i++){
 		currVertex=vertices[i];
 		currNeighList=currVertex.incoming
 		for(k=0;k<currVertex.in_deg;k++){
 			from=currNeightList[k]->from;to=currNeightList[k]->to;
-			if(from.id==i&&to.id>i){
-				*prices[counter+to.id-i]=currNeighList[k]->weight;
+			if(from==i&&to>i){
+				*prices[counter+to-i]=currNeighList[k]->weight;
 			}else
-			if(to.id==i&&from.id>i){
-				*prices[counter+from.id-i]=currNeighList[k]->weight;
+			if(to==i&&from>i){
+				*prices[counter+from-i]=currNeighList[k]->weight;
 			}
 		}
 		counter+=(nV-i-1);
