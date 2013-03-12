@@ -75,7 +75,7 @@ int check_string_is_double(char *str) {
 		}
 	}
 	weight=strtod(str,&tmp);
-	if(weight==HUGE_VAL||strlen(tmp)>0)
+	if(weight==HUGE_VAL||strlen(tmp)>0||weight>1||weight<0)
 		return FALSE;
 	
 	return TRUE;
@@ -141,7 +141,7 @@ int dispatch_add_edge(char *params, network *net) {
 	else if (check_and_get_three_params(params+1, &first_param, &second_param,&third_param) == FALSE) {
 		send_error(24);
 		return 1;
-	} else if ((check_string_is_non_negative_integer(first_param) == FALSE) || (check_string_is_non_negative_integer(second_param) == FALSE)||check_string_is_double(third_param)) {
+	} else if ((check_string_is_non_negative_integer(first_param) == FALSE) || (check_string_is_non_negative_integer(second_param) == FALSE)||check_string_is_dobule(third_param)) {
 		send_error(5);
 		return 1;
 	} else {
