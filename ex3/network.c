@@ -68,7 +68,7 @@ void print_edges(network *net) {
 	}
 }
 
-void get_prices_array(int nV,network *net,double *prices){
+void get_prices_array(int nV,network *net,double **prices){
 	int i,j,k;
 	vertex currVertex;
 	int counter=0;
@@ -81,22 +81,22 @@ void get_prices_array(int nV,network *net,double *prices){
 		for(k=0;k<currVertex.in_deg;k++){
 			from=currNeightList[k]->from;to=currNeightList[k]->to;
 			if(from.id==i&&to.id>i){
-				prices[counter+to.id-i]=currNeighList[k]->weight;
+				*prices[counter+to.id-i]=currNeighList[k]->weight;
 			}else
 			if(to.id==i&&from.id>i){
-				prices[counter+from.id-i]=currNeighList[k]->weight;
+				*prices[counter+from.id-i]=currNeighList[k]->weight;
 			}
 		}
 		counter+=(nV-i-1);
 	}
 }
 
-void get_id_array(int nV,network *net,int *id){
+void get_id_array(int nV,int **id){
 	int i,j;
 	int counter=0;
 	for(i=0;i<;i++){
 		for(j=(i+1);j<nV;j++){
-			if[counter++]=counter;
+			*id[counter++]=counter;
 		}
 	}
 }
