@@ -91,12 +91,12 @@ void get_prices_array(int nV,network *net,double **prices){
 	}
 }
 
-void get_id_array(int nV,int **id){
+void get_id_array(int nV,int ***id){
 	int i,j;
 	int counter=0;
 	for(i=0;i<;i++){
-		for(j=(i+1);j<nV;j++){
-			*id[counter++]=counter;
+		for(j=0;j<nV-i-1;j++){
+			*id[i][j]=counter++;
 		}
 	}
 }
