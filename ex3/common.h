@@ -27,7 +27,7 @@ struct vertex {
 	int		out_deg;
 	int		in_deg;
 	// Assert incoming length = in_deg
-	double	PR;
+	int 	cluster_id;
 };
 typedef struct vertex vertex;
 
