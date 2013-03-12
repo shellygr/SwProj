@@ -82,7 +82,7 @@ int cluster()
    /* Use CPXcopylp to transfer the ILP part of the problem data into the cplex pointer lp */   
 int nV=numOfVertices(network);
 int numCols =nV*(nV-1)/2 ,numRows=numCols*(nV-2);
-int counter,i,j,k;
+int counter,i,j,k,conNumbering;
 
 int **IDs=malloc(nV*sizeof(int*));
 int **offset=malloc(nV*sizeof(int*));
@@ -146,16 +146,51 @@ for(i=0;i<numCols;i++)
 get_id_array(nV,&IDs);
 get_prices_array(net,&prices);
 
-// matind is built by 
 
+/*
 for(i=0;i<nV;i++){
 	for(j=(i+1);j<nV;j++){
-		counter=0;
+		matbeg[IDs[i][j-i-1]]=conIndices[i][j];
+		matcnt[IDs[i][j-i-1]]=3*(nV-2);
+	}
+}
+*/
+
+conNumbering=0
+for(i=0;i<nV;i++){
+	for(j=(i+1);j<nV;j++){
+		counter=0;/*why do we need this? the loop 3lines above can be used to init matbeg and matcnt*/
 		for(k=j+1;k<nV;k++){
 			if(k==i||k==j)/*why do we need this check?(the condition never holds...)*/
 				continue;
 			matbeg[counter]=conIndices[i][j];
-			matcnt[counter]=3*(nV-2);
+			matcnt[counter]=3*(nV-2);			
+			
+			/*
+			//building the constraint Xij-Xjk+Xik<=1
+			matind[conIndices[i][j]+offset[i][j]]=conNumbering;
+			matval[conIndices[i][j]+(offset[i][j]++)]=1;
+			matind[conIndices[j][k]+offset[k][i]]=conNumbering;
+			matval[conIndices[j][k]+(offset[k][i]++)]=-1;
+			matind[conIndices[i][k]+offset[i][k]]=conNumbering++;
+			matval[conIndices[i][k]+(offset[i][k]++)]=1;
+			
+			//building the constraint -Xij+Xjk+Xik<=1
+			matind[conIndices[i][j]+offset[i][j]]=conNumbering;
+			matval[conIndices[i][j]+(offset[i][j]++)]=-1;
+			matind[conIndices[j][k]+offset[k][i]]=conNumbering;
+			matval[conIndices[j][k]+(offset[k][i]++)]=1;
+			matind[conIndices[i][k]+offset[i][k]]=conNumbering++;
+			matval[conIndices[i][k]+(offset[i][k]++)]=1;
+			
+			//building the constraint Xij+Xjk-Xik<=1
+			matind[conIndices[i][j]+offset[i][j]]=conNumbering;
+			matval[conIndices[i][j]+(offset[i][j]++)]=1;
+			matind[conIndices[j][k]+offset[k][i]]=conNumbering;
+			matval[conIndices[j][k]+(offset[k][i]++)]=1;
+			matind[conIndices[i][k]+offset[i][k]]=conNumbering++;
+			matval[conIndices[i][k]+(offset[i][k]++)]=-1;
+			*/
 			
 			/*"case" (i,j,k)---->(i,j,k)*/
 			matind[conIndices[i][j]+offset[i][j]]=IDs[i][j-i-1];
