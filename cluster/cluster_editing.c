@@ -87,7 +87,7 @@ int counter,i,j,k,id;
 int **IDs=malloc(nV*sizeof(int*));
 int **offset=malloc(nV*sizeof(int*));
 int **conIndices=malloc(nV*sizeof(int*));/*MUST BE FREED LATER*/
-if(conIndeces==NULL){
+if(conIndeces==NULL||offset==NULL||IDs==NULL){
 	printf("DRAGONS!!!");
 }
 for(i=0;i<nV;i++){
@@ -119,6 +119,8 @@ ub=malloc(numCols*sizeOf(dobule));
 rhs=malloc(numRows*sizeof(double));
 sense=malloc(numRows*sizeof(char));
 prices=malloc(numCols*sizeof(double));
+get_id_array(nV,&IDs);
+get_prices_array(net,&prices);
 /*MALLOC CHECKS FOR EVERYTHING!!*/
 if(sense==NULL||prices==NULL||rhs==NULL||matbeg==NULL||matind==NULL||matcnt==NULL||matval==NULL||lb==NULL||ub==NULL){
 
