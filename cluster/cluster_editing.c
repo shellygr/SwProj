@@ -93,7 +93,7 @@ if(conIndeces==NULL||offset==NULL||IDs==NULL){
 for(i=0;i<nV;i++){
 	IDs[i]=malloc((nV-i-1)*sizeof(int));
 	conIndices[i]=malloc(3*(nV-i-1)*sizeof(int));/*malloc NULL check*/
-	offset[i]=malloc(3*(nV-2)*size(int));
+	offset[i]=malloc((nV-i-1)*size(int)); /*WAS:malloc(3*(nV-2)*size(int)).We need offset index for each variable Xij, i<j*/
 }
 for(i=0;i<nV;i++)
 	for(j=(i+1);j<nV;j++){
@@ -168,28 +168,28 @@ for(i=0;i<nV;i++){
 			
 			/*
 			//building the constraint Xij-Xjk+Xik<=1
-			matind[conIndices[i][j]+offset[i][j]]=conNumbering;
-			matval[conIndices[i][j]+(offset[i][j]++)]=1;
-			matind[conIndices[j][k]+offset[k][i]]=conNumbering;
-			matval[conIndices[j][k]+(offset[k][i]++)]=-1;
-			matind[conIndices[i][k]+offset[i][k]]=conNumbering++;
-			matval[conIndices[i][k]+(offset[i][k]++)]=1;
+			matind[conIndices[i][j-i]+offset[i][j-i]]=conNumbering;
+			matval[conIndices[i][j-i]+(offset[i][j-i]++)]=1;
+			matind[conIndices[j][k-j]+offset[j][k-j]]=conNumbering;
+			matval[conIndices[j][k-j]+(offset[j][k-j]++)]=-1;
+			matind[conIndices[i][k-i]+offset[i][k-i]]=conNumbering++;
+			matval[conIndices[i][k-i]+(offset[i][k-i]++)]=1;
 			
 			//building the constraint -Xij+Xjk+Xik<=1
-			matind[conIndices[i][j]+offset[i][j]]=conNumbering;
-			matval[conIndices[i][j]+(offset[i][j]++)]=-1;
-			matind[conIndices[j][k]+offset[k][i]]=conNumbering;
-			matval[conIndices[j][k]+(offset[k][i]++)]=1;
-			matind[conIndices[i][k]+offset[i][k]]=conNumbering++;
-			matval[conIndices[i][k]+(offset[i][k]++)]=1;
+			matind[conIndices[i][j-i]+offset[i][j-i]]=conNumbering;
+			matval[conIndices[i][j-i]+(offset[i][j-i]++)]=-1;
+			matind[conIndices[j][k-j]+offset[j][k-j]]=conNumbering;
+			matval[conIndices[j][k-j]+(offset[j][k-j]++)]=1;
+			matind[conIndices[i][k-i]+offset[i][k-i]]=conNumbering++;
+			matval[conIndices[i][k-i]+(offset[i][k-i]++)]=1;
 			
 			//building the constraint Xij+Xjk-Xik<=1
-			matind[conIndices[i][j]+offset[i][j]]=conNumbering;
-			matval[conIndices[i][j]+(offset[i][j]++)]=1;
-			matind[conIndices[j][k]+offset[k][i]]=conNumbering;
-			matval[conIndices[j][k]+(offset[k][i]++)]=1;
-			matind[conIndices[i][k]+offset[i][k]]=conNumbering++;
-			matval[conIndices[i][k]+(offset[i][k]++)]=-1;
+			matind[conIndices[i][j-i]+offset[i][j-i]]=conNumbering;
+			matval[conIndices[i][j-i]+(offset[i][j-i]++)]=1;
+			matind[conIndices[j][k-j]+offset[j][k-j]]=conNumbering;
+			matval[conIndices[j][k-j]+(offset[j][k-j]++)]=1;
+			matind[conIndices[i][k-i]+offset[i][k-i]]=conNumbering++;
+			matval[conIndices[i][k-i]+(offset[i][k-i]++)]=-1;
 			*/
 			
 			/*"case" (i,j,k)---->(i,j,k)*/
