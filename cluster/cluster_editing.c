@@ -148,12 +148,43 @@ get_prices_array(net,&prices);
 
 
 /*
+I think the initialization should be:
 for(i=0;i<nV;i++){
 	for(j=(i+1);j<nV;j++){
 		matbeg[IDs[i][j-i-1]]=conIndices[i][j];
 		matcnt[IDs[i][j-i-1]]=3*(nV-2);
 	}
 }
+for(i=0;i<nV;i++){
+	for(j=0;j<nV-i-1;j++){		
+		for(k=0;k<nV-j-1;k++){
+			//building the constraint Xij-Xjk+Xik<=1
+			matind[conIndices[i][j+offset[i][j]]=conNumbering;
+			matval[conIndices[i][j]+(offset[i][j]++)]=1;
+			matind[conIndices[j][k]+offset[j][k]]=conNumbering;
+			matval[conIndices[j][k]+(offset[j][k]++)]=-1;
+			matind[conIndices[i][k]+offset[i][k]]=conNumbering++;
+			matval[conIndices[i][k]+(offset[i][k]++)]=1;
+			
+			//building the constraint -Xij+Xjk+Xik<=1
+			matind[conIndices[i][j+offset[i][j]]=conNumbering;
+			matval[conIndices[i][j]+(offset[i][j]++)]=-1;
+			matind[conIndices[j][k]+offset[j][k]]=conNumbering;
+			matval[conIndices[j][k]+(offset[j][k]++)]=1;
+			matind[conIndices[i][k]+offset[i][k]]=conNumbering++;
+			matval[conIndices[i][k]+(offset[i][k]++)]=1;
+			
+			//building the constraint Xij+Xjk-Xik<=1
+			matind[conIndices[i][j+offset[i][j]]=conNumbering;
+			matval[conIndices[i][j]+(offset[i][j]++)]=1;
+			matind[conIndices[j][k]+offset[j][k]]=conNumbering;
+			matval[conIndices[j][k]+(offset[j][k]++)]=1;
+			matind[conIndices[i][k]+offset[i][k]]=conNumbering++;
+			matval[conIndices[i][k]+(offset[i][k]++)]=-1;
+		}
+	}	
+}
+
 */
 
 conNumbering=0
@@ -168,28 +199,28 @@ for(i=0;i<nV;i++){
 			
 			/*
 			//building the constraint Xij-Xjk+Xik<=1
-			matind[conIndices[i][j-i]+offset[i][j-i]]=conNumbering;
-			matval[conIndices[i][j-i]+(offset[i][j-i]++)]=1;
-			matind[conIndices[j][k-j]+offset[j][k-j]]=conNumbering;
-			matval[conIndices[j][k-j]+(offset[j][k-j]++)]=-1;
-			matind[conIndices[i][k-i]+offset[i][k-i]]=conNumbering++;
-			matval[conIndices[i][k-i]+(offset[i][k-i]++)]=1;
+			matind[conIndices[i][j-i-1]+offset[i][j-i-1]]=conNumbering;
+			matval[conIndices[i][j-i-1]+(offset[i][j-i-1]++)]=1;
+			matind[conIndices[j-i-1][k-j-1]+offset[j-i-1][k-j-1]]=conNumbering;
+			matval[conIndices[j-i-1][k-j-1]+(offset[j-i-1][k-j-1]++)]=-1;
+			matind[conIndices[i][k-j-1]+offset[i][k-j-1]]=conNumbering++;
+			matval[conIndices[i][k-j-1]+(offset[i][k-j-1]++)]=1;
 			
 			//building the constraint -Xij+Xjk+Xik<=1
-			matind[conIndices[i][j-i]+offset[i][j-i]]=conNumbering;
-			matval[conIndices[i][j-i]+(offset[i][j-i]++)]=-1;
-			matind[conIndices[j][k-j]+offset[j][k-j]]=conNumbering;
-			matval[conIndices[j][k-j]+(offset[j][k-j]++)]=1;
-			matind[conIndices[i][k-i]+offset[i][k-i]]=conNumbering++;
-			matval[conIndices[i][k-i]+(offset[i][k-i]++)]=1;
+			matind[conIndices[i][j-i-1]+offset[i][j-i-1]]=conNumbering;
+			matval[conIndices[i][j-i-1]+(offset[i][j-i-1]++)]=-1;
+			matind[conIndices[j-i-1][k-j-1]+offset[j-i-1][k-j-1]]=conNumbering;
+			matval[conIndices[j-i-1][k-j-1]+(offset[j-i-1][k-j-1]++)]=1;
+			matind[conIndices[i][k-j-1]+offset[i][k-j-1]]=conNumbering++;
+			matval[conIndices[i][k-j-1]+(offset[i][k-j-1]++)]=1;
 			
 			//building the constraint Xij+Xjk-Xik<=1
-			matind[conIndices[i][j-i]+offset[i][j-i]]=conNumbering;
-			matval[conIndices[i][j-i]+(offset[i][j-i]++)]=1;
-			matind[conIndices[j][k-j]+offset[j][k-j]]=conNumbering;
-			matval[conIndices[j][k-j]+(offset[j][k-j]++)]=1;
-			matind[conIndices[i][k-i]+offset[i][k-i]]=conNumbering++;
-			matval[conIndices[i][k-i]+(offset[i][k-i]++)]=-1;
+			matind[conIndices[i][j-i-1]+offset[i][j-i-1]]=conNumbering;
+			matval[conIndices[i][j-i-1]+(offset[i][j-i-1]++)]=1;
+			matind[conIndices[j-i-1][k-j-1]+offset[j-i-1][k-j-1]]=conNumbering;
+			matval[conIndices[j-i-1][k-j-1]+(offset[j-i-1][k-j-1]++)]=1;
+			matind[conIndices[i][k-j-1]+offset[i][k-j-1]]=conNumbering++;
+			matval[conIndices[i][k-j-1]+(offset[i][k-j-1]++)]=-1;
 			*/
 			
 			/*"case" (i,j,k)---->(i,j,k)*/
