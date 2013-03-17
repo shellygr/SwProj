@@ -39,17 +39,18 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
 	  continue;
       
 	elem* elm = init_elem(newVertexId, NULL);
-	if(edges[id[i][newVertexId]]==1)
-		realEdges[i]=1;
+
+	if(edges[id[i][newVertexId-i-1]]==1){
+		*realEdges[i]=1;
+		(get_vertex(newVertexId, net))->cluster_id = cluster_id;
 	
+	}
 	if(!colors[newVertexId]){
 	  enqueue(elm);
-	  if(edges[id[i][newVertexId]] == 1){
-		colors[newVertexId] = 1; // gray/black	  	
+	  if(edges[id[i][newVertexId-i-1]] == 1){
+		*colors[newVertexId] = 1; // gray/black	  	
 	  }
-	}
-	(get_vertex(newVertexId, net))->cluster_id = cluster_id;
-      
+	}      
       
       }
     
@@ -58,11 +59,19 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
   
 }
 
-void bfs_all(network *net, int **edge,int numCols){
-	int colors[network->num_of_vertices];
-	int realEdges[numCols];
+void bfs_all(network *net,int **id, int **edges,int nV,int **realEdges){
+	int colors[nV];
+	int i,cluster_id=1; /*0 OR 1???*/
 	
+	for(i=0;i<nv;i++){
+		colors[i]=0;
+	}
 	
+	for(i=0;i<nV;i++){		
+		if(!colors[i]){
+			bfs(net,get_vertex(net,i),edges,id,cluster_id++,realEdges,&colors);
+		}
+	}
 	
 }
 
