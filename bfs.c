@@ -2,20 +2,21 @@
 #include "network.h" // in an upper folder
 
 // returns cluster's diameter - longest shortest path
-int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id) {
+int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **realEdges,int **colors) {
     edge **lst;
     edge *currEdge;
     vertex *currVertex;
     int from, to;
-    int i,currVertexId, newVertexId;
+    int i,currVertexId, newVertexId;   
+    
     queue *q = NULL;
     init_queue(q);
-    int colors[network->num_of_vertices];
-    
+        
     // init colors to all white - 0
     // assumed
     
-    
+    for(i=0;i<numCols;i++)
+    	realEdges[i]=0;
       
     enqueue(s);
     currVertexId=s->id;
@@ -38,10 +39,14 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id) {
 	  continue;
       
 	elem* elm = init_elem(newVertexId, NULL);
+	if(edges[id[i][newVertexId]]==1)
+		realEdges[i]=1;
+	
 	if(!colors[newVertexId]){
 	  enqueue(elm);
-	  if(edges[id[i][newVertexId]] == 1)
-	  colors[newVertexId] = 1; // gray/black
+	  if(edges[id[i][newVertexId]] == 1){
+		colors[newVertexId] = 1; // gray/black	  	
+	  }
 	}
 	(get_vertex(newVertexId, net))->cluster_id = cluster_id;
       
@@ -53,5 +58,11 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id) {
   
 }
 
-void bfs_all(network *net, double **edge)
+void bfs_all(network *net, int **edge,int numCols){
+	int colors[network->num_of_vertices];
+	int realEdges[numCols];
+	
+	
+	
+}
 
