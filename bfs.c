@@ -2,7 +2,8 @@
 #include "network.h" // in an upper folder
 
 // returns cluster's diameter - longest shortest path
-int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **realEdges,int **colors) {
+int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **realEdges,
+	int **colors,int **distfunc,double avgWithinCluster,int *edgesBetClusters,double *sumBetClusters,int makeChanges) {
     edge **lst;
     edge *currEdge;
     vertex *currVertex;
@@ -61,6 +62,15 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
 
 void bfs_all(network *net,int **id, int **edges,int nV,int **realEdges){
 	int colors[nV];
+	int **distfunc;
+	double sumBetween;
+	int counterBetween;
+	double clustersScores[nV];/*Array of Tuples(not to lose the original ids)*/
+	/*
+	[6,7,4,5,1,2,3]
+	inv_dic=[5,6,7,3,4,1,2]
+	v->cluster_id=inv_dic[v->cluster_id];
+	*/
 	int i,cluster_id=1; /*0 OR 1???*/
 	
 	for(i=0;i<nv;i++){
