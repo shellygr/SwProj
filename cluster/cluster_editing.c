@@ -106,7 +106,7 @@ assert(counter==numRows);
 
 int ids[numCols];
 char ctypes[numCols];
-int obvsen=CPX_MIN;
+int obvsen=CPX_MAX;
 double prices[numCols],lb[numCols],up[numCols]; /* Objective coeffs*/
 double rhs[numRows]; /* Target 1-1-1-1-1 */
 char sense[numRows]; /* "<= "=='L' */
