@@ -3,15 +3,15 @@
 
 // returns cluster's diameter - longest shortest path
 int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **realEdges,
-	int **longest_shortest,double *avgWithinCluster,int *edgesBetClusters,double *sumBetClusters,int makeChanges,
+	int **longest_shortest, double *avgWithinCluster, int *edgesBetClusters, double *sumBetClusters, int makeChanges,
 	int *size) {
-    edge **lst;
-    edge *currEdge;
-    vertex *currVertex;
-    int from, to;
-    int i,currVertexId, newVertexId;   
-    int distFunc[nV];
-    int colors[nV];
+    edge 	**lst;
+    edge 	*currEdge;
+    vertex 	*currVertex;
+    int 	from, to;
+    int 	i,currVertexId, newVertexId;   
+    int 	distFunc[nV];
+    int 	colors[nV];
     
     *size = 1; /* 1 for vertex s*/
     
@@ -30,52 +30,50 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
    
     // assumed
     
-    for(i=0;i<numCols;i++)
-    	realEdges[i]=0;
+    for( i = 0 ; i < numCols ; i++ )
+    	realEdges[i] = 0;
     
     /*if (!(*colors[s->id])) { /* s is not white so make sure not overriding everything*/*/
-    enqueue(init_elem(s->id, NULL));
+    enqueue( init_elem( s->id, NULL ) );
     distfunc[s] = 0;
-    currVertexId=s->id;
+    currVertexId = s->id;
     
-    while(!is_empty(q)){
-      currVertexId=dequeue(q);
-      currVertex=get_vertex(currVertexId, net);
-      lst=currVertex->incoming;
+    while ( !is_empty(q) ) {
+      	currVertexId = dequeue(q);
+      	currVertex = get_vertex( currVertexId, net );
+      	lst = currVertex->incoming;
       
-      for(i=0; i<currVertex->out_deg; i++){
-	currEdge = lst[i];
-      	to   = currEdge->to;
-	from = currEdge->from;
-	if(to==currVertexId) {
-	  newVertexId = from;
-	}else{
-	  newVertexId = to;
-	}
-	if(newVertexId<i)
-	  continue;
-      
-	elem* elm = init_elem(newVertexId, NULL);
-
-	if(edges[id[i][newVertexId-i-1]]==1){
-		*realEdges[i]=1;
-		if ((get_vertex(newVertexId, net))->cluster_id != -1)  // A check for cluster_id existing
-			(get_vertex(newVertexId, net))->cluster_id = cluster_id;
-	
-	}
-	
-	if(!(*colors[newVertexId])){
-	  enqueue(elm);
-	  (*size)++;
-	  if(edges[id[i][newVertexId-i-1]] == 1){
-		*colors[newVertexId] = 1; // gray/black
-		*distfunc[newVertexId] = (*distfunc[currVertex]) + 1;
-	  }
-	}      
-      
-      }
-    
-      
+		for ( i = 0 ; i < currVertex->out_deg ; i++ ) {
+			currEdge = lst[i];
+	      	to   = currEdge->to;
+			from = currEdge->from;
+			if (to == currVertexId) {
+		  	newVertexId = from;
+			} else {
+		  	newVertexId = to;
+			}
+		
+			if ( newVertexId < i )
+			  continue;
+		      
+			elem* elm = init_elem( newVertexId, NULL );
+		
+			if ( edges[id[i][newVertexId-i-1]] == 1 ) {
+				*realEdges[i] = 1;
+				if ( (get_vertex(newVertexId, net))->cluster_id != -1 )  // A check for cluster_id existing
+					(get_vertex(newVertexId, net))->cluster_id = cluster_id;	
+			}
+			
+			if ( !(*colors[newVertexId]) ) {
+				  enqueue(elm);
+				  (*size)++;
+				  if ( edges[id[i][newVertexId-i-1]] == 1 ) {
+					*colors[newVertexId] = 1; // gray/black
+					*distfunc[newVertexId] = (*distfunc[currVertex]) + 1;
+			  }
+			}      
+	   	}
+	      
     }
 
     for ( i = 0 ; i < nV ; i++ )
