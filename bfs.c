@@ -1,7 +1,7 @@
 #include "queue.h"
 #include "network.h" // in an upper folder
 
-// returns cluster's  size - # of vertices -----diameter - longest shortest path
+// returns cluster's diameter - longest shortest path
 int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **realEdges,
 	int **longest_shortest,double *avgWithinCluster,int *edgesBetClusters,double *sumBetClusters,int makeChanges,
 	int *size) {
@@ -19,12 +19,15 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
     init_queue(q);
     
     /* Init distfunc and colors */
+    // init colors to all white - 0
+    // I know what vertices already has been assigned a cluster so I'm not afraid of re-runnning BFS on them.
+    // I'll just make sure no vertex with a valid cluster_id is assigned a new one.'
     for (i = 0 ; i < nV ; i++) {
     	distfunc[i] = -1;
-    	colors[i] = -1;
+    	colors[i] = 0;
     }
     
-    // init colors to all white - 0
+   
     // assumed
     
     for(i=0;i<numCols;i++)
@@ -56,7 +59,7 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
 
 	if(edges[id[i][newVertexId-i-1]]==1){
 		*realEdges[i]=1;
-		if ((get_vertex(newVertexId, net))->cluster_id != -1) 
+		if ((get_vertex(newVertexId, net))->cluster_id != -1)  // A check for cluster_id existing
 			(get_vertex(newVertexId, net))->cluster_id = cluster_id;
 	
 	}
@@ -74,6 +77,10 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
     
       
     }
+
+    for ( i = 0 ; i < nV ; i++ )
+    	if (distfunc[i] > longest_shortest[cluster_id]) /* each element of distfunc is a shortest path dist */
+    		longest_shortest[cluster_id] = distfunc[i];
   
 }
 
@@ -94,7 +101,7 @@ void bfs_all(network *net,int **id, int **edges,int nV,int **realEdges){
 	
 	/* Init longest shortest path array */
 	for (i = 0 ; i < nV ; i++)
-		longest_shortest[i] = -1;
+		longest_shortest[i] = 0;
 	
 	/*for(i=0;i<nV;i++){
 		colors[i]=0;
