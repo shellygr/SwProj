@@ -112,8 +112,6 @@ void bfs_all(network *net,int **id, int **edges,int nV,int **realEdges){
 		//}
 	}
 	
-	/* Build array of sorting by scores */
-	
-	
+	/* Build array of sorting by scores */	
 }
 
