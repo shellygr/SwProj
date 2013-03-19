@@ -26,7 +26,7 @@ int solver(network *net){
 	int       status;
 	int nV=net->numOfVertiex;
 	int numCols =nV*(nV-1)/2;	
-	int *realEdges[numCols];
+	int realEdges[numCols];
 	tuple **clusterScores;
 	int results[numCols]; //edges indicator
 	int **IDs=malloc(nV*sizeof(int*));//MALLOC CHECKS
@@ -54,8 +54,10 @@ int solver(network *net){
 		status=2;
 	}	
 	get_id_array(nV,&IDs);
-	cluster(net,&results,IDs);
-
+	cluster(net,&results,IDs,&status);
+	bfs_all(net,IDs,results,nV,&realEdges,&clusterScores,&status);
+	if(*status==2)
+		return;
 }
 
 int cluster(network *net,int **result;int **IDs,int *status)
