@@ -127,7 +127,7 @@ void bfs_all(network *net,int **id, int **edges, int nV, int **realEdges){
 	/* Build array of sorting by scores */	
 }
 //avg_between[nV], init it
-double calc_avg_between(network* net, double **avg_between, int *edges, int **id) {
+double calc_avg(network* net, double *avg_between, double **avgWithin, int *edges, int **id) {
 	int i, j;
 	edge **lst;
 	vertex *currVertex;
@@ -148,6 +148,8 @@ double calc_avg_between(network* net, double **avg_between, int *edges, int **id
 			
 			if (edges[id[curr_vertex_id][other_vertex_id]] == 1) { // real edge! not ghost
 				if (currVertex->cluster_id == get_vertex(other_vertex_id, net)->cluster_id) { //within
+					int cluster_id = currVertex->cluster_id;
+					
 				} else { // between
 				}
 			}	
