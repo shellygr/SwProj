@@ -66,12 +66,12 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
 					(get_vertex(newVertexId, net))->cluster_id = cluster_id;	
 			}
 			
-			if ( !(*colors[newVertexId]) ) {
+			if ( !(colors[newVertexId]) ) {
 				  enqueue(elm);
 				  (*size)++;
 				  if ( edges[id[i][newVertexId-i-1]] == 1 ) {
-					*colors[newVertexId] = 1; // gray/black
-					*distfunc[newVertexId] = (*distfunc[currVertex]) + 1;
+					colors[newVertexId] = 1; // gray/black
+					distfunc[newVertexId] = (distfunc[currVertex]) + 1;
 				  }
 			}      
 	   	}
