@@ -23,6 +23,7 @@
    Communicate to pass the problem and the solution between the modules in the best way you see. 
 */
 int solver(network *net){
+	int       status;
 	int nV=net->numOfVertiex;
 	int numCols =nV*(nV-1)/2;	
 	int *realEdges[numCols];
@@ -31,21 +32,33 @@ int solver(network *net){
 	int **IDs=malloc(nV*sizeof(int*));//MALLOC CHECKS
 	if(IDs==NULL){
 		send_perror("malloc");
+		status=2;
 	}
 	clusterScores=malloc(nV*sizeof(tuple*));
 	if(clusterScores==NULL){
 		free(IDs);
 		send_perror("malloc");
+		status=2;
 	}
+	
+	
 	for(i=0;i<nV;i++){
 		IDs[i]=malloc((nV-i-1)*sizeof(int));
+		if(IDs[i]==NULL){
+			for(;i>=0;i--){
+				free(IDs[i]);
+				status=2;
+			}
+			break;
+		}
+		status=2;
 	}	
 	get_id_array(nV,&IDs);
 	cluster(net,&results,IDs);
 
 }
 
-int cluster(network *net,int **result;int **IDs)
+int cluster(network *net,int **result;int **IDs,int *status)
 {
 
    /* Declare pointers for the variables and arrays that will contain
@@ -59,7 +72,7 @@ int cluster(network *net,int **result;int **IDs)
 
    CPXENVptr p_env              = NULL;
    CPXLPptr  p_lp               = NULL;
-   int       status;
+ 
    
    /* Initialize the CPLEX environment */
    p_env = CPXopenCPLEX (&status);
