@@ -22,7 +22,22 @@
    Read solution (both objective function value and variables assignment). 
    Communicate to pass the problem and the solution between the modules in the best way you see. 
 */
-int cluster()
+int solver(network *net){
+	int nV=net->numOfVertiex;
+	int numCols =nV*(nV-1)/2;	
+	int *realEdges[numCols];
+	tuple clusterScores[nV];
+	int results[numCols]; //edges indicator
+	int **IDs=malloc(nV*sizeof(int*));//MALLOC CHECKS
+	for(i=0;i<nV;i++){
+		IDs[i]=malloc((nV-i-1)*sizeof(int));
+	}	
+	get_id_array(nV,&IDs);
+	cluster(net,&results,IDs);
+
+}
+
+int cluster(network *net,int **result;int **IDs)
 {
 
    /* Declare pointers for the variables and arrays that will contain
@@ -80,18 +95,18 @@ int cluster()
    }
 
    /* Use CPXcopylp to transfer the ILP part of the problem data into the cplex pointer lp */   
-int nV=numOfVertices(network);
+int nV=net->numOfVertiex;
 int numCols =nV*(nV-1)/2 ,numRows=numCols*(nV-2);
 int counter,i,j,k,conNumbering;
 
-int **IDs=malloc(nV*sizeof(int*));
+/*int **IDs=malloc(nV*sizeof(int*));*///possibly out of this function
 int **offset=malloc(nV*sizeof(int*));
 int **conIndices=malloc(nV*sizeof(int*));/*MUST BE FREED LATER*/
 if(conIndeces==NULL||offset==NULL||IDs==NULL){
 	printf("DRAGONS!!!");
 }
 for(i=0;i<nV;i++){
-	IDs[i]=malloc((nV-i-1)*sizeof(int));
+	/*IDs[i]=malloc((nV-i-1)*sizeof(int));*///possibly out of this function
 	conIndices[i]=malloc(3*(nV-i-1)*sizeof(int));/*malloc NULL check*/
 	offset[i]=malloc((nV-i-1)*size(int)); /*WAS:malloc(3*(nV-2)*size(int)).We need offset index for each variable Xij, i<j*/
 }
@@ -113,7 +128,8 @@ char sense[numRows]; /* "<= "=='L' */
 int matbeg[numCols],matind[numCols*3*(nV-2)],matcnt[numCols];
 double matval[numCols*3*(nV-2)];
 double x[numCols];
-int results[numCols];
+int *results=*result;
+/*int results[numCols];*/
 double objval;
 int solstat;
 
