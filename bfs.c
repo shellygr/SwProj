@@ -5,18 +5,16 @@
 
 // returns cluster's diameter - longest shortest path
 int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,int **realEdges,
-	int **longest_shortest, double *avgWithinCluster, int *edgesBetClusters, double *sumBetClusters, int makeChanges,
-	int *size) {
+	int **longest_shortest, tuple **clusterScores) {
     edge 	**lst;
     edge 	*currEdge;
     vertex 	*currVertex;
-    int 	from, to;
+    int 	from, to,size=1,numEdges=0;
     int 	i,currVertexId, newVertexId;   
     int 	distFunc[nV];
     int 	colors[nV];
     int		is_new = FALSE;
-    
-    *size = 1; /* 1 for vertex s*/
+    double sum=0;
     
     queue *q = NULL;
     init_queue(q);
@@ -66,6 +64,8 @@ int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,int **re
 			elem* elm = init_elem( newVertexId, NULL );
 		
 			if ( edges[id[i][newVertexId-i-1]] == 1 ) {
+				numEdges++;
+				sum+=currEdge->weight;
 				*realEdges[id[i][newVertexId-i-1]] = 1; // why? we will overlap a lot
 				if ( (get_vertex(newVertexId, net))->cluster_id != -1 )  // A check for cluster_id existing
 					(get_vertex(newVertexId, net))->cluster_id = cluster_id;	
@@ -73,14 +73,19 @@ int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,int **re
 			
 			if ( !(colors[newVertexId]) ) {
 				  enqueue(elm);
-				  (*size)++;
+				  size++;
 				  if ( edges[id[i][newVertexId-i-1]] == 1 ) {
 					colors[newVertexId] = 1; // gray/black
 					distfunc[newVertexId] = (distfunc[currVertex]) + 1;
 				  }
 			}      
 	   	}
-	      
+	if(is_new){
+	   *clusterScores[cluster_id]->size=size;
+	   *clusterScores[cluster_id]->score=sum;
+	   *clusterScores[cluster_id]->numOfEdges=numEdges;
+	   *clusterScores[cluster_id]->place=cluster_id;
+	}
     }
 
     for ( i = 0 ; i < nV ; i++ )
@@ -100,7 +105,7 @@ void bfs_all(network *net,int **id, int **edges, int nV, int **realEdges){
 	double sumBetween = 0;
 	int counterBetween = 0;
 	int size = 0;
-	double clustersScores[nV];/*Array of Tuples(not to lose the original ids)*/
+	tuple clustersScores[nV];/*Array of Tuples(not to lose the original ids)*/
 	/*
 	[6,7,4,5,1,2,3]
 	inv_dic=[5,6,7,3,4,1,2]
@@ -118,8 +123,7 @@ void bfs_all(network *net,int **id, int **edges, int nV, int **realEdges){
 	
 	for(i=0;i<nV;i++){		
 		//if(!colors[i]){
-			bfs(net,get_vertex(net,i),edges,id,&cluster_id,realEdges,&longest_shortest,&avgWithin,
-			&counterBetween,&sumBetween,&size);
+			bfs(net,get_vertex(net,i),edges,id,&cluster_id,realEdges,&longest_shortest,&clusterScores);
 		//}
 	}
 	// -1 <~> infinity
