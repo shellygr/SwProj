@@ -3,19 +3,27 @@
 
 // returns cluster's  size - # of vertices -----diameter - longest shortest path
 int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **realEdges,
-	int **colors,int **distfunc,double avgWithinCluster,int *edgesBetClusters,double *sumBetClusters,int makeChanges,
+	int **longest_shortest,double *avgWithinCluster,int *edgesBetClusters,double *sumBetClusters,int makeChanges,
 	int *size) {
     edge **lst;
     edge *currEdge;
     vertex *currVertex;
     int from, to;
     int i,currVertexId, newVertexId;   
+    int distFunc[nV];
+    int colors[nV];
     
     *size = 1; /* 1 for vertex s*/
     
     queue *q = NULL;
     init_queue(q);
-        
+    
+    /* Init distfunc and colors */
+    for (i = 0 ; i < nV ; i++) {
+    	distfunc[i] = -1;
+    	colors[i] = -1;
+    }
+    
     // init colors to all white - 0
     // assumed
     
@@ -23,7 +31,8 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
     	realEdges[i]=0;
     
     /*if (!(*colors[s->id])) { /* s is not white so make sure not overriding everything*/*/
-    enqueue(s);
+    enqueue(init_elem(s->id, NULL));
+    distfunc[s] = 0;
     currVertexId=s->id;
     
     while(!is_empty(q)){
@@ -47,14 +56,17 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
 
 	if(edges[id[i][newVertexId-i-1]]==1){
 		*realEdges[i]=1;
-		(get_vertex(newVertexId, net))->cluster_id = cluster_id;
+		if ((get_vertex(newVertexId, net))->cluster_id != -1) 
+			(get_vertex(newVertexId, net))->cluster_id = cluster_id;
 	
 	}
+	
 	if(!(*colors[newVertexId])){
 	  enqueue(elm);
 	  (*size)++;
 	  if(edges[id[i][newVertexId-i-1]] == 1){
-		*colors[newVertexId] = 1; // gray/black	  	
+		*colors[newVertexId] = 1; // gray/black
+		*distfunc[newVertexId] = (*distfunc[currVertex]) + 1;
 	  }
 	}      
       
@@ -67,9 +79,11 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
 
 void bfs_all(network *net,int **id, int **edges,int nV,int **realEdges){
 	int colors[nV];
-	int **distfunc;
-	double sumBetween;
-	int counterBetween;
+	int longest_shortest[nV]; /* Maintains longest shortest paths for each cluster. Max of nV clusters */
+	double avgWithin = 0;
+	double sumBetween = 0;
+	int counterBetween = 0;
+	int size = 0;
 	double clustersScores[nV];/*Array of Tuples(not to lose the original ids)*/
 	/*
 	[6,7,4,5,1,2,3]
@@ -78,14 +92,19 @@ void bfs_all(network *net,int **id, int **edges,int nV,int **realEdges){
 	*/
 	int i,cluster_id=1; /*0 OR 1???*/
 	
-	for(i=0;i<nv;i++){
+	/* Init longest shortest path array */
+	for (i = 0 ; i < nV ; i++)
+		longest_shortest[i] = -1;
+	
+	/*for(i=0;i<nV;i++){
 		colors[i]=0;
-	}
+	}*/
 	
 	for(i=0;i<nV;i++){		
-		if(!colors[i]){
-			bfs(net,get_vertex(net,i),edges,id,cluster_id++,realEdges,&colors);
-		}
+		//if(!colors[i]){
+			bfs(net,get_vertex(net,i),edges,id,cluster_id++,realEdges,&longest_shortest,&avgWithin,
+			&counterBetween,&sumBetween,&size);
+		//}
 	}
 	
 	/* Build array of sorting by scores */
