@@ -45,12 +45,12 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
       
 		for ( i = 0 ; i < currVertex->out_deg ; i++ ) {
 			currEdge = lst[i];
-	      	to   = currEdge->to;
+	      		to   = currEdge->to;
 			from = currEdge->from;
 			if (to == currVertexId) {
-		  	newVertexId = from;
+		  		newVertexId = from;
 			} else {
-		  	newVertexId = to;
+		  		newVertexId = to;
 			}
 		
 			if ( newVertexId < i )
@@ -70,7 +70,7 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
 				  if ( edges[id[i][newVertexId-i-1]] == 1 ) {
 					*colors[newVertexId] = 1; // gray/black
 					*distfunc[newVertexId] = (*distfunc[currVertex]) + 1;
-			  }
+				  }
 			}      
 	   	}
 	      
