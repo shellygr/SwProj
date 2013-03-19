@@ -1,6 +1,6 @@
 typedef struct tuple{
   int size;  
-  int score;
+  double score;
   int place;
   int averageWithin;
 };
