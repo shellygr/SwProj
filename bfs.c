@@ -1,14 +1,17 @@
 #include "queue.h"
 #include "network.h" // in an upper folder
 
-// returns cluster's diameter - longest shortest path
+// returns cluster's  size - # of vertices -----diameter - longest shortest path
 int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **realEdges,
-	int **colors,int **distfunc,double avgWithinCluster,int *edgesBetClusters,double *sumBetClusters,int makeChanges) {
+	int **colors,int **distfunc,double avgWithinCluster,int *edgesBetClusters,double *sumBetClusters,int makeChanges,
+	int *size) {
     edge **lst;
     edge *currEdge;
     vertex *currVertex;
     int from, to;
     int i,currVertexId, newVertexId;   
+    
+    *size = 1; /* 1 for vertex s*/
     
     queue *q = NULL;
     init_queue(q);
@@ -18,7 +21,8 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
     
     for(i=0;i<numCols;i++)
     	realEdges[i]=0;
-      
+    
+    /*if (!(*colors[s->id])) { /* s is not white so make sure not overriding everything*/*/
     enqueue(s);
     currVertexId=s->id;
     
@@ -46,8 +50,9 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
 		(get_vertex(newVertexId, net))->cluster_id = cluster_id;
 	
 	}
-	if(!colors[newVertexId]){
+	if(!(*colors[newVertexId])){
 	  enqueue(elm);
+	  (*size)++;
 	  if(edges[id[i][newVertexId-i-1]] == 1){
 		*colors[newVertexId] = 1; // gray/black	  	
 	  }
@@ -82,6 +87,9 @@ void bfs_all(network *net,int **id, int **edges,int nV,int **realEdges){
 			bfs(net,get_vertex(net,i),edges,id,cluster_id++,realEdges,&colors);
 		}
 	}
+	
+	/* Build array of sorting by scores */
+	
 	
 }
 
