@@ -83,7 +83,7 @@ int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,int **re
 	if(is_new){
 	   *clusterScores[cluster_id]->size=size;
 	   *clusterScores[cluster_id]->score=sum;
-	   *clusterScores[cluster_id]->numOfEdges=numEdges;
+	   *clusterScores[cluster_id]->averageWithin=score/numEdges;
 	   *clusterScores[cluster_id]->place=cluster_id;
 	}
     }
@@ -98,19 +98,23 @@ int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,int **re
   
 }
 
-void bfs_all(network *net,int **id, int **edges, int nV, int **realEdges){
+void bfs_all(network *net,int **id, int **edges, int nV, int **realEdges,tuple *clusterScores){
 	int colors[nV];
 	int longest_shortest[nV]; /* Maintains longest shortest paths for each cluster. Max of nV clusters */
 	double avgWithin = 0;
 	double sumBetween = 0;
 	int counterBetween = 0;
 	int size = 0;
-	tuple clustersScores[nV];/*Array of Tuples(not to lose the original ids)*/
-	/*
+	
+	
+	/*tuple clustersScores[nV]; Array of Tuples(not to lose the original ids)
+	
 	[6,7,4,5,1,2,3]
 	inv_dic=[5,6,7,3,4,1,2]
 	v->cluster_id=inv_dic[v->cluster_id];
 	*/
+	
+	
 	int i,cluster_id=1; /*0 OR 1???*/
 	
 	/* Init longest shortest path array */
