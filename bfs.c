@@ -1,6 +1,8 @@
 #include "queue.h"
 #include "network.h" // in an upper folder
 
+// this file should be called "statistics"
+
 // returns cluster's diameter - longest shortest path
 int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **realEdges,
 	int **longest_shortest, double *avgWithinCluster, int *edgesBetClusters, double *sumBetClusters, int makeChanges,
@@ -59,7 +61,7 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
 			elem* elm = init_elem( newVertexId, NULL );
 		
 			if ( edges[id[i][newVertexId-i-1]] == 1 ) {
-				*realEdges[i] = 1;
+				*realEdges[i] = 1; // why? we will overlap a lot
 				if ( (get_vertex(newVertexId, net))->cluster_id != -1 )  // A check for cluster_id existing
 					(get_vertex(newVertexId, net))->cluster_id = cluster_id;	
 			}
@@ -82,7 +84,7 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
   
 }
 
-void bfs_all(network *net,int **id, int **edges,int nV,int **realEdges){
+void bfs_all(network *net,int **id, int **edges, int nV, int **realEdges){
 	int colors[nV];
 	int longest_shortest[nV]; /* Maintains longest shortest paths for each cluster. Max of nV clusters */
 	double avgWithin = 0;
@@ -113,5 +115,36 @@ void bfs_all(network *net,int **id, int **edges,int nV,int **realEdges){
 	}
 	
 	/* Build array of sorting by scores */	
+}
+//avg_between[nV], init it
+double calc_avg_between(network* net, double **avg_between, int *edges, int **id) {
+	int i, j;
+	edge **lst;
+	vertex *currVertex;
+	int other_vertex_id;
+	int curr_vertex_id;
+	
+	for ( i = 0 ; i < net->num_of_vertices ; i++ ) {
+		currVertex = get_vertex( i , net );
+		lst = currVertex->incoming;
+		for ( j = 0  ; j < currVertex->out_deg ; j++ ) {
+			other_vertex_id = lst[j]->to;
+			if (other_vertex_id < i) {
+				curr_vertex_id = other_vertex_id;
+				other_vertex_id = i;
+			} else {
+				curr_vertex_id = i;
+			}
+			
+			if (edges[id[curr_vertex_id][other_vertex_id]] == 1) { // real edge! not ghost
+				if (currVertex->cluster_id == get_vertex(other_vertex_id, net)->cluster_id) { //within
+				} else { // between
+				}
+			}	
+		}
+		
+		
+	}
+	
 }
 
