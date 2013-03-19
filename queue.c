@@ -13,6 +13,8 @@ elem* init_elem(void* content, elem* next) {
 
 void init_queue(queue *q) {
   queue *q = (queue*)malloc(sizeof(queue));
+  if(q==NULL)
+    return NULL;
   q->head = NULL;
   q->tail = NULL;
   return q;
