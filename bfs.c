@@ -98,7 +98,7 @@ int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,int **re
   
 }
 
-void bfs_all(network *net,int **id, int **edges, int nV, int **realEdges,tuple *clusterScores){
+void bfs_all(network *net,int **id, int **edges, int nV, int **realEdges,tuple **clusterScores){
 	int colors[nV];
 	int longest_shortest[nV]; /* Maintains longest shortest paths for each cluster. Max of nV clusters */
 	double avgWithin = 0;
