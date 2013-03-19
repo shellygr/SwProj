@@ -4,7 +4,7 @@
 // this file should be called "statistics"
 
 // returns cluster's diameter - longest shortest path
-int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **realEdges,
+int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,int **realEdges,
 	int **longest_shortest, double *avgWithinCluster, int *edgesBetClusters, double *sumBetClusters, int makeChanges,
 	int *size) {
     edge 	**lst;
@@ -14,6 +14,7 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
     int 	i,currVertexId, newVertexId;   
     int 	distFunc[nV];
     int 	colors[nV];
+    int		is_new = FALSE;
     
     *size = 1; /* 1 for vertex s*/
     
@@ -35,9 +36,13 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
     for( i = 0 ; i < numCols ; i++ )
     	realEdges[i] = 0;
     
+    
+    if (s->cluster_id != -1)
+    	is_new = TRUE;
+    
     /*if (!(*colors[s->id])) { /* s is not white so make sure not overriding everything*/*/
     enqueue( init_elem( s->id, NULL ) );
-    distfunc[s] = 0;
+    distfunc[s->id] = 0;
     currVertexId = s->id;
     
     while ( !is_empty(q) ) {
@@ -82,6 +87,9 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
     	if ((get_vertex (i , net))->cluster_id == cluster_id)
     		if ((distfunc[i] > longest_shortest[cluster_id]) || (distfunc[i] == -1)) /* each element of distfunc is a shortest path dist */
     			longest_shortest[cluster_id] = distfunc[i];
+    			
+    if (is_new)
+    	(*cluster_id)++;
   
 }
 
@@ -110,7 +118,7 @@ void bfs_all(network *net,int **id, int **edges, int nV, int **realEdges){
 	
 	for(i=0;i<nV;i++){		
 		//if(!colors[i]){
-			bfs(net,get_vertex(net,i),edges,id,cluster_id++,realEdges,&longest_shortest,&avgWithin,
+			bfs(net,get_vertex(net,i),edges,id,&cluster_id,realEdges,&longest_shortest,&avgWithin,
 			&counterBetween,&sumBetween,&size);
 		//}
 	}
