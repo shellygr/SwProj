@@ -26,9 +26,17 @@ int solver(network *net){
 	int nV=net->numOfVertiex;
 	int numCols =nV*(nV-1)/2;	
 	int *realEdges[numCols];
-	tuple clusterScores[nV];
+	tuple **clusterScores;
 	int results[numCols]; //edges indicator
 	int **IDs=malloc(nV*sizeof(int*));//MALLOC CHECKS
+	if(IDs==NULL){
+		send_perror("malloc");
+	}
+	clusterScores=malloc(nV*sizeof(tuple*));
+	if(clusterScores==NULL){
+		free(IDs);
+		send_perror("malloc");
+	}
 	for(i=0;i<nV;i++){
 		IDs[i]=malloc((nV-i-1)*sizeof(int));
 	}	
@@ -102,7 +110,7 @@ int counter,i,j,k,conNumbering;
 /*int **IDs=malloc(nV*sizeof(int*));*///possibly out of this function
 int **offset=malloc(nV*sizeof(int*));
 int **conIndices=malloc(nV*sizeof(int*));/*MUST BE FREED LATER*/
-if(conIndeces==NULL||offset==NULL||IDs==NULL){
+if(conIndeces==NULL||offset==NULL/*||IDs==NULL*/){
 	printf("DRAGONS!!!");
 }
 for(i=0;i<nV;i++){
