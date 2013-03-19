@@ -61,7 +61,7 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
 			elem* elm = init_elem( newVertexId, NULL );
 		
 			if ( edges[id[i][newVertexId-i-1]] == 1 ) {
-				*realEdges[i] = 1; // why? we will overlap a lot
+				*realEdges[id[i][newVertexId-i-1]] = 1; // why? we will overlap a lot
 				if ( (get_vertex(newVertexId, net))->cluster_id != -1 )  // A check for cluster_id existing
 					(get_vertex(newVertexId, net))->cluster_id = cluster_id;	
 			}
@@ -79,8 +79,9 @@ int bfs(network* net, vertex* s, int **edges, int **id, int cluster_id,int **rea
     }
 
     for ( i = 0 ; i < nV ; i++ )
-    	if (distfunc[i] > longest_shortest[cluster_id]) /* each element of distfunc is a shortest path dist */
-    		longest_shortest[cluster_id] = distfunc[i];
+    	if ((get_vertex (i , net))->cluster_id == cluster_id)
+    		if ((distfunc[i] > longest_shortest[cluster_id]) || (distfunc[i] == -1)) /* each element of distfunc is a shortest path dist */
+    			longest_shortest[cluster_id] = distfunc[i];
   
 }
 
@@ -113,6 +114,7 @@ void bfs_all(network *net,int **id, int **edges, int nV, int **realEdges){
 			&counterBetween,&sumBetween,&size);
 		//}
 	}
+	// -1 <~> infinity
 	
 	/* Build array of sorting by scores */	
 }
