@@ -6,6 +6,9 @@ void destroy_elem(elem* elm) {
 
 elem* init_elem(void* content, elem* next) {
   elem *elm = (elem*)malloc(sizeof(elem));
+  if(elm==NULL)
+    return NULL;
+  
   elm->content = content;
   elm->next = next;  
   return elm;
