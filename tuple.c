@@ -7,6 +7,8 @@ typedef struct tuple{
 
 void* init_tuple(int size,double score,int place,int averageWithin){
   tuple *ret=(tuple *)malloc(sizeof(tuple));
+  if(ret==NULL)
+    return NULL;
   ret->size=size;ret->score=score;ret->place=place;ret->averageWithin=averageWithin;
   return ret;
 }
