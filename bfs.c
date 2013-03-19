@@ -5,7 +5,7 @@
 
 // returns cluster's diameter - longest shortest path
 int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,int **realEdges,
-	int **longest_shortest, tuple ***clusterScores) {
+	int **longest_shortest, tuple ***clusterScores, int* status) {
     edge 	**lst;
     edge 	*currEdge;
     vertex 	*currVertex;
@@ -18,6 +18,10 @@ int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,int **re
     
     queue *q = NULL;
     init_queue(q);
+    if(q==NULL){
+    	*status=2;
+    	return;    
+    }
     
     /* Init distfunc and colors */
     // init colors to all white - 0
@@ -62,6 +66,10 @@ int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,int **re
 			  continue;
 		      
 			elem* elm = init_elem( newVertexId, NULL );
+			if(elm==NULL){
+				*status=2;
+				return;
+			}
 		
 			if ( edges[id[i][newVertexId-i-1]] == 1 ) {
 				numEdges++;
@@ -82,6 +90,10 @@ int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,int **re
 	   	}
 	if(is_new){
 		*clusterScores[cluster_id]=init_tuple(size,sum.place,averageWithin);
+		if(*clusterScores[cluster_id]==NULL){
+			*status=2;
+			return;
+		}
 	}
     }
 
@@ -95,7 +107,7 @@ int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,int **re
   
 }
 
-void bfs_all(network *net,int **id, int **edges, int nV, int **realEdges,tuple ***clusterScores){
+void bfs_all(network *net,int **id, int **edges, int nV, int **realEdges,tuple ***clusterScores,int *status){
 	int colors[nV];
 	int longest_shortest[nV]; /* Maintains longest shortest paths for each cluster. Max of nV clusters */
 	double avgWithin = 0;
@@ -124,7 +136,9 @@ void bfs_all(network *net,int **id, int **edges, int nV, int **realEdges,tuple *
 	
 	for(i=0;i<nV;i++){		
 		//if(!colors[i]){
-			bfs(net,get_vertex(net,i),edges,id,&cluster_id,realEdges,&longest_shortest,&clusterScores);
+			bfs(net,get_vertex(net,i),edges,id,&cluster_id,realEdges,&longest_shortest,&clusterScores,status);
+			if(*status==2)
+				return;
 		//}
 	}
 	// -1 <~> infinity
