@@ -5,7 +5,7 @@
 
 // returns cluster's diameter - longest shortest path
 int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,int **realEdges,
-	int **longest_shortest, tuple **clusterScores) {
+	int **longest_shortest, tuple ***clusterScores) {
     edge 	**lst;
     edge 	*currEdge;
     vertex 	*currVertex;
@@ -81,10 +81,7 @@ int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,int **re
 			}      
 	   	}
 	if(is_new){
-	   *clusterScores[cluster_id]->size=size;
-	   *clusterScores[cluster_id]->score=sum;
-	   *clusterScores[cluster_id]->averageWithin=score/numEdges;
-	   *clusterScores[cluster_id]->place=cluster_id;
+		*clusterScores[cluster_id]=init_tuple(size,sum.place,averageWithin);
 	}
     }
 
@@ -98,7 +95,7 @@ int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,int **re
   
 }
 
-void bfs_all(network *net,int **id, int **edges, int nV, int **realEdges,tuple **clusterScores){
+void bfs_all(network *net,int **id, int **edges, int nV, int **realEdges,tuple ***clusterScores){
 	int colors[nV];
 	int longest_shortest[nV]; /* Maintains longest shortest paths for each cluster. Max of nV clusters */
 	double avgWithin = 0;
