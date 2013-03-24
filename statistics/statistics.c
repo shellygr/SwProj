@@ -2,8 +2,8 @@
 #include "common.h" // in an upper folder
 // this file should be called "statistics"
 
-void bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,
-		int **longest_shortest, tuple ***clusterScores, int* status) {
+int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,
+		int **longest_shortest, tuple ***clusterScores) {
 
 	int nV = net->num_of_vertices;
 	int numCols = nV * (nV - 1) / 2;
@@ -21,8 +21,7 @@ void bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,
 	queue *q = NULL;
 	init_queue(q);
 	if (q == NULL) {
-		*status = 2;
-		return;
+		return 2;
 	}
 
 	/* Init distfunc and colors */
@@ -63,8 +62,7 @@ void bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,
 
 			elem* elm = init_elem(newVertexId, NULL);
 			if (elm == NULL) {
-				*status = 2;
-				return;
+				return 2;
 			}
 
 			if (edges[id[currVertexId][newVertexId - currVertexId - 1]] == 1) {
@@ -89,8 +87,7 @@ void bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,
 		if (is_new) {
 			*clusterScores[cluster_id-1] = init_tuple(size, sum, cluster_id);
 			if (*clusterScores[cluster_id-1] == NULL) {
-				*status = 2;
-				return;
+				return 2;
 			}
 		}
 	}
@@ -101,15 +98,17 @@ void bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,
 					|| (distFunc[i] == -1)) /* each element of distfunc is a shortest path dist */
 				longest_shortest[cluster_id-1] = distFunc[i];
 
-	if (is_new)
+	if (is_new) {
 		(*cluster_id)++;
+	}
 
+	return 0;
 }
 
 // Runs bfs on all vertices to get a correct diameter for each cluster. Also helps to calculate the score and size according to which we sort the clusters.
-// Returns the number of clusters
+// Returns the number of clusters, -1 on error
 int bfs_all(network *net, int **id, int nV, int *realEdges,
-		tuple ***clusterScores, int *status) {
+		tuple **clusterScores) {
 
 	int longest_shortest[nV]; /* Maintains longest shortest paths for each cluster. Max of nV clusters */
 	int size = 0;
@@ -129,10 +128,10 @@ int bfs_all(network *net, int **id, int nV, int *realEdges,
 		longest_shortest[i] = 0;
 
 	for (i = 0; i < nV; i++) {
-		bfs(net, get_vertex(net, i), realEdges, id, &cluster_id,
-				&longest_shortest, &clusterScores, status);
-		if (*status == 2)
+		if (bfs(net, get_vertex(net, i), realEdges, id, &cluster_id,
+				&longest_shortest, &clusterScores) == 2) {
 			return -1; // should free and clean
+		}
 	}
 
 	for (i = 0; i < cluster_id; i++) {
@@ -156,13 +155,12 @@ int bfs_all(network *net, int **id, int nV, int *realEdges,
 	return cluster_id;
 	// -1 <~> infinity
 
-	/* Build array of sorting by scores */
 }
 
 //avg_between[nV], init it
 // calcs both within for each cluster separately and overall within, and between.
 void calc_avg(network* net, tuple ***clusterScores, double *avg_within, double *avgBetween,
-		int **edges, int **id) {
+		int *edges, int **id) {
 	int i, j;
 	int nV = net->num_of_vertices;
 	int count_edges[nV]; /* for within clusters */
@@ -195,11 +193,11 @@ void calc_avg(network* net, tuple ***clusterScores, double *avg_within, double *
 						*avg_within = ((*avg_within * (count_within++))
 								+ curr_weight) / count_within;
 
-						double old_avg =
-								*(*clusterScores[cluster_id])->averageWithin;
+					/*	double old_avg =
+								*(*clusterScores[cluster_id])->average_within;
 						*(*clusterScores[cluster_id])->averageWithin =
 								(((old_avg * (count_edges[cluster_id]++))
-										+ curr_weight) / count_edges[cluster_id]);
+										+ curr_weight) / count_edges[cluster_id]);*/
 					} else { // between
 						*avgBetween = ((*avgBetween * (count_between++))
 								+ curr_weight) / count_between;

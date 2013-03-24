@@ -2,46 +2,60 @@
 #include "structs.h"
 #include "cluster_editing.h"
 
+int 	nV; /* Shorthand for the number of vertices in the network */
+int 	numCols; /* Shorthand for the number of edges = variables we have */
 
+void update_globals(int nV_update, int numCols_update) {
+	nV = nV_update;
+	numCols = numCols_update;
+}
 
-int solver(network *net, double ghost_const, char *out_file, double *avg_within, double *avgBetween, int *num_of_clusters) {
+int solver(network *net, double ghost_const, char *out_file, double *avg_within, double *avgBetween, int *num_of_clusters, tuple **cluster_scores, int **realEdges, double *optimized) {
 	int		status;
-
-	int 	realEdges[numCols]; // only edges that existed before, no ghosts
 	int 	results[numCols]; // edges indicator - includes ghosts
 	int 	**IDs;
-
 
 	if (init_ids(&IDs) == 2) {
 		return 2;
 	}
 
+	cluster(net, &results, IDs, &status, ghost_const, out_file, optimized);
 
+	if (status == 2) { // is it 2?
+		return 2;
+	}
 
-
-	cluster(net, &results, IDs, &status, ghost_const, out_file);
-
-	// Get the real edges
-	for (i = 0; i < numCols; i++)
-		realEdges[i] = 0;
-	get_real_edges(net, results, &realEdges);
-
-	*num_of_clusters = bfs_all(net, IDs, nV, realEdges, cluster_scores, &status);
-
-	// Set averages.
-	*avgBetween = 0;
-	*avg_within = 0;
-	calc_avg(net, cluster_scores, avg_within, avgBetween, realEdges, IDs);
+	if (get_statistics(net, avg_within, avgBetween, num_of_clusters, cluster_scores, IDs, realEdges, results) == 2) {
+		free_array(&IDs);
+		return 2;
+	}
 
 	free_array(&IDs);
-
-	if (status == 2)
-		return 2;
 
 	return 0;
 }
 
+int get_statistics(network *net, double *avg_within, double *avgBetween, int *num_of_clusters, tuple **cluster_scores, int **IDs, int **realEdges, int *results) {
+	int i;
 
+	// Get the real edges
+	for (i = 0; i < numCols; i++)
+		realEdges[i] = 0;
+	get_real_edges(net, results, realEdges);
+
+	*num_of_clusters = bfs_all(net, IDs, nV, *realEdges, cluster_scores);
+
+	if (*num_of_clusters == -1) {
+		return 2;
+	}
+
+	// Set averages.
+	*avgBetween = 0;
+	*avg_within = 0;
+	calc_avg(net, cluster_scores, avg_within, avgBetween, *realEdges, IDs);
+
+	return 0;
+}
 
 int init_ids(int ***IDs) {
 	int i;

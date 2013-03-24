@@ -50,7 +50,7 @@ int print_newline(FILE *file) {
 }
 
 // make sure network has vertices, or don't create files.
-int results_writer(network *net, int **edges, double ghost_const,
+int results_writer(network *net, int *edges, double ghost_const,
 		double optimized_score, int num_of_clusters, double avg_within, double avg_between,
 		tuple **cluster_scores, char *out_dir) {
 	FILE *results;
@@ -149,7 +149,7 @@ char* get_full_path(char *out_dir, char *filename) {
 	return full_path;
 }
 
-int output(network *net, int **edges, double ghost_const,
+int output(network *net, int *edges, double ghost_const,
 		double optimized_score, int num_of_clusters, double avg_within, double avg_between, char *out_dir) {
 
 	if (net->num_of_vertices == 0) {

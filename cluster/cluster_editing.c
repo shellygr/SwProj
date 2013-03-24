@@ -26,7 +26,7 @@
  Communicate to pass the problem and the solution between the modules in the best way you see.
  */
 int cluster(network *net, int **result, int **IDs, int *status, double C,
-		char *out_file) {
+		char *out_file, double *objval) {
 
 	int nV = net->num_of_vertices;
 	int numCols = nV * (nV - 1) / 2;
@@ -60,7 +60,7 @@ int cluster(network *net, int **result, int **IDs, int *status, double C,
 	double x[numCols];
 	int *results = *result;
 	/*int results[numCols];*/
-	double objval;
+	//double objval;
 	int solstat;
 
 	/* Initialize the CPLEX environment */
@@ -220,7 +220,7 @@ int cluster(network *net, int **result, int **IDs, int *status, double C,
 		goto TERMINATE;
 	}
 
-	CPXsolution(p_env, p_lp, &solstat, &objval, x, NULL, NULL, NULL);
+	CPXsolution(p_env, p_lp, &solstat, objval, x, NULL, NULL, NULL);
 
 	for (i = 0; i < numCols; i++) {
 		if (IS_VALUE_1(x[i]))

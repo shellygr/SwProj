@@ -2,14 +2,15 @@
 
 int analyze_network(network *net, double ghost_const, char *out_dir) {
 
-	int 	nV; /* Shorthand for the number of vertices in the network */
-	int 	numCols; /* Shorthand for the number of edges = variables we have */
-
-	tuple	**cluster_scores;
+	int 	nV		=	net->num_of_vertices; /* Shorthand for the number of vertices in the network */
+	int 	numCols =	nV * (nV - 1) / 2; /* Shorthand for the number of edges = variables we have */
 	char	*out_file;
 
-	nV		=	net->num_of_vertices;
-	numCols =	nV * (nV - 1) / 2;
+	int		num_of_clusters;
+	double	avg_within, avg_between;
+	tuple	**cluster_scores;
+	int 	realEdges[numCols]; // only edges that existed before, no ghosts
+	double	optimized_score;
 
 	if (init_cluster_scores(&cluster_scores) == 2) {
 		return 2;
@@ -20,7 +21,24 @@ int analyze_network(network *net, double ghost_const, char *out_dir) {
 		return 2;
 	}
 
+	update_globals(nV, numCols); // curious if that works!
 
+	if (solver(net, ghost_const, out_file, &avg_within, &avg_between, &num_of_clusters, cluster_scores, &realEdges, &optimized_score) == 2) {
+		free_and_null(cluster_scores);
+		free_and_null(out_file);
+		return 2;
+	}
+
+	if(output(net, realEdges, ghost_const,
+			optimized_score, num_of_clusters, avg_within, avg_between, *out_dir) == 2) {
+		free_and_null(cluster_scores);
+		free_and_null(out_file);
+		return 2;
+	}
+
+	free_and_null(cluster_scores);
+	free_and_null(out_file);
+	return 0;
 }
 
 
