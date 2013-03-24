@@ -1,6 +1,8 @@
 #include "common.h"
+#include "structs.h"
+
 #define ERROR_CODE_m3 "Error: Should have 3 arguments: input folder, output folder, constant C"
-#define ERROR_CODE_m2 "Error: Folder name must end with a '/'
+#define ERROR_CODE_m2 "Error: Folder name must end with a '/'"
 #define ERROR_CODE_m1 "Error: input folder must contain a file named 'network'"
 #define ERROR_CODE_0 "Error: Constant c must be 0 <= c <= 1"
 #define ERROR_CODE_1 "Error: command must have at least one character\n"

@@ -1,18 +1,17 @@
-#include <stdlib.h>
 #include "common.h"
+#include "structs.h"
 
 // Vertex
 
-
 void destroy_vertex(vertex *vrtx) {
 
-	if (vrtx->in_deg > 0) {
+	if (vrtx->deg > 0) {
 		int j;
-		for (j = 0 ; j < vrtx->in_deg ; j++) 
-			free(vrtx->incoming[j]);
+		for (j = 0; j < vrtx->deg; j++)
+			free(vrtx->adjacency_list[j]);
 	}
-	
-	free(vrtx->incoming);
+
+	free(vrtx->adjacency_list);
 	free(vrtx->name);
 	free(vrtx);
 }
@@ -24,30 +23,27 @@ vertex* init_vertex(char *name, int id) {
 		return NULL;
 	}
 	vrtx->id = id;
-	if (init_array(&vrtx->incoming) == NULL) {
+	if (init_array(&vrtx->adjacency_list) == NULL) {
 		destroy_vertex(vrtx);
 		return NULL;
 	}
-	if ((vrtx->name = malloc(MAX_COMMAND_LENGTH-11)) == NULL) { // "add_vertex " is 11 chars
+	if ((vrtx->name = malloc(MAX_COMMAND_LENGTH - 11)) == NULL) { // "add_vertex " is 11 chars
 		destroy_vertex(vrtx);
 		send_perror("malloc");
 		return NULL;
 	}
 	strncpy(vrtx->name, name, strlen(name));
-	vrtx->name[strlen(name)]='\0';
-	vrtx->in_deg = 0;
-	vrtx->out_deg = 0;
-	vrtx->PR = DEFAULT_PR;
+	vrtx->name[strlen(name)] = '\0';
+	vrtx->deg = 0;
+	vrtx->cluster_id = -1;
 
 	return vrtx;
 }
 
-
-
 int double_vertices(vertex ***v, size_t current_size) {
 	vertex **tmp;
-	
-	if ( (tmp = realloc(*v, 2*current_size*sizeof(vertex*))) == NULL ) {
+
+	if ((tmp = realloc(*v, 2 * current_size * sizeof(vertex*))) == NULL) {
 		send_perror("realloc");
 		return 2;
 	} else {
@@ -64,10 +60,10 @@ int add_edge_to_vertex(vertex **src_vrtx, vertex **dest_vrtx, edge *e) {
 		free(e);
 		return 1;
 	}
-	
-	(*src_vrtx)->out_deg++;
 
+	(*src_vrtx)->deg++;
 
-	return double_and_add(&((*dest_vrtx)->incoming), &((*dest_vrtx)->in_deg), e)||double_and_add(&((*src_vrtx)->incoming), &((*src_vrtx)->in_deg), e);
+	return double_and_add(&((*dest_vrtx)->adjacency_list), &((*dest_vrtx)->deg),e)
+			|| double_and_add(&((*src_vrtx)->adjacency_list), &((*src_vrtx)->deg), e);
 }
 

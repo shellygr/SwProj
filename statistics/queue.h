@@ -1,14 +1,22 @@
 struct queue {
-  elem* head; // The first to go out
-  elem* tail; // Last element - inserted first
+	elem* head; // The first to go out
+	elem* tail; // Last element - inserted first
 };
 typedef struct queue queue;
 
 struct elem {
-  void* content;
-  elem* next;
+	void* content;
+	elem* next;
 };
+
 typedef struct elem elem;
+
+typedef struct tuple {
+	int size;
+	double score;
+	int place;
+	int diameter;
+} tuple;
 
 void destroy_elem(elem* elm);
 elem* init_elem(void* content, elem* next);
