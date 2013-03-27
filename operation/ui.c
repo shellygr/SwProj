@@ -1,7 +1,7 @@
 #include "common.h"
 #include "structs.h"
 
-char* get_command(int *exit_status, int fd) {
+char* get_command(int *exit_status, FILE *f) {
 	char *ret = NULL, *command = NULL;
 	int count = 0, i = 0;
 	int first_non_whitespace = -1;
@@ -13,7 +13,7 @@ char* get_command(int *exit_status, int fd) {
 	}
 
 	while (count < MAX_COMMAND_LENGTH) {
-		*(command + i) = fgetc(fd);
+		*(command + i) = fgetc(f);
 		if (*(command + i) == EOF) {
 			send_perror("fgetc");
 			free(command);
@@ -48,8 +48,7 @@ char* get_command(int *exit_status, int fd) {
 	if (count >= MAX_COMMAND_LENGTH) {
 		*(command + count - 1) = '\0';
 		free(command);
-		while (getchar() != '\n')
-			;
+		while (getchar() != '\n');
 		send_error(2);
 		return NULL;
 	}

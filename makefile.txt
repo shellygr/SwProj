@@ -1,0 +1,57 @@
+CPLEX=cplex125
+CPARCH=x86-64_sles10_4.1
+
+CFLAGS+= -ansi -pedantic-errors -Wall -g
+CFLAGS+= -I/usr/local/stow/${CPLEX}/lib/${CPLEX}/include
+CFLAGS+= -I/usr/include/libxml2
+CFLAGS+= -std=c99
+
+LDFLAGS+= -L/usr/local/stow/${CPLEX}/lib/${CPLEX}/lib/${CPARCH}/static_pic -lilocplex -lcplex 
+LDFLAGS+= -lm -lpthread -lgraph
+LDFLAGS+= -lxml2
+
+all: Cluster
+
+clean:
+	rm cluster_editing.o Cluster
+
+Cluster: cluster_editing.o
+	gcc -o Cluster cluster_editing.o $(CFLAGS) $(LDFLAGS)
+
+cluster_editing.o: cluster_editing.h cluster_editing.c
+	gcc -c cluster_editing.c $(CFLAGS)
+	
+	
+	C_FLAGS = -ansi -Wall -pedantic-errors -std=c99
+
+all: Ex3
+
+clean: 
+	rm *.o Ex3
+
+Ex3: main.o
+		 gcc $(C_FLAGES) -o Ex3 main.o network.o vertex.o edge.o dynamic_array.o ui.o commands.o errors.o
+
+main.o:	common.h
+		 gcc $(C_FLAGS) -c main.c
+	
+errors.o:
+		 gcc $(C_FLAGS) -c errors.c
+
+ui.o: common.h
+		 gcc $(C_FLAGS) -c ui.c
+	
+commands.o: common.h
+		 gcc $(C_FLAGS) -c commands.c
+	
+network.o: common.h
+		 gcc $(C_FLAGS) -c network.c
+
+vertex.o: common.h
+		 gcc $(C_FLAGS) -c vertex.c
+	
+edge.o: common.h
+		 gcc $(C_FLAGS) -c edge.c
+
+dynamic_array.o: common.h
+		 gcc $(C_FLAGS) -c dynamic_array.c

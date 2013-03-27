@@ -49,7 +49,7 @@ void* get_element(int index, dynamic_array *arr);
 int is_power_two(int x);
 
 /*ui.c*/
-char* get_command(int *exit_status);
+char* get_command(int *exit_status, FILE *f) {
 int check_all_whitespace(char *str);
 int get_action(char *command);
 char *get_params(char *command, int code);

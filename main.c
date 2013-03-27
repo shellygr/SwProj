@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 	}
 
 	/* Open network file */
-	*input_file = fopen(filename);
+	input_file = fopen(filename, "r");
 	if (input_file == NULL) {
 		send_perror("fopen");
 		exit(EXIT_FAILURE);
@@ -33,8 +33,6 @@ int main(int argc, char **argv) {
 	if (exit_status != 0) {
 		exit(EXIT_FAILURE);
 	}
-
-
 
 	destroy_net(net);
 
@@ -80,22 +78,23 @@ int check_args(int argc, char **argv) {
 }
 
 int build_network(network *net, FILE *input_file) {
-	char *command;
+	char *command = NULL;
 	int status;
 
 	while (!feof(input_file)) {
 		int action;
 		char *params;
 
-		command = get_command(&status);
+		command = get_command(&status, input_file);
 		if(status == 2){
 			destroy_net(net);
 			exit(EXIT_FAILURE);
 		}
 
-		if (command == NULL)
+		if (command == NULL) {
 			continue;
-
+		}
+		
 		action = get_action(command);
 
 		params = get_params(command, action);

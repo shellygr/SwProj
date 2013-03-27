@@ -83,9 +83,11 @@ int check_string_is_double(char *str) {
 	return TRUE;
 }
 
+/*
 int check_not_max_num_of_vertices(network *net) {
 	return (net->num_of_vertices >= MAX_NUM_OF_VERTICES ? FALSE : TRUE);
 }
+*/
 
 int is_legal_id(int id, network *net) {
 	return (id >= net->num_of_vertices ? FALSE : TRUE);
@@ -123,8 +125,8 @@ int dispatch_add_vertex(char *params, network *net) {
 		send_error(3);
 	else if (check_one_param(params + 1) == FALSE) {
 		send_error(14);
-	} else if (check_not_max_num_of_vertices(net) == FALSE) {
-		send_error(6);
+	//} else if (check_not_max_num_of_vertices(net) == FALSE) {
+	//	send_error(6);
 	} else {
 		return add_vertex(params + 1, net);
 	}
