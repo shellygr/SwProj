@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdlib.h>
+
 #define WHITESPACES " \n\t\v\f\r"
 #define MAX_COMMAND_LENGTH	501 // Including \0
 
@@ -35,6 +38,7 @@ int init_network(network **net);
 int add_vertex_to_network(network **net, vertex *vrtx);
 vertex* get_vertex(int id, network *net);
 void print_edges(network *net);
+void get_prices_array(network *net, double *prices);
 
 /*edge.c*/
 void init_edge(edge **e, int from, int to, double weight);
@@ -49,7 +53,7 @@ void* get_element(int index, dynamic_array *arr);
 int is_power_two(int x);
 
 /*ui.c*/
-char* get_command(int *exit_status, FILE *f) {
+char* get_command(int *exit_status, FILE *f);
 int check_all_whitespace(char *str);
 int get_action(char *command);
 char *get_params(char *command, int code);
@@ -58,7 +62,6 @@ char *get_params(char *command, int code);
 void destroy_vertex(vertex *vrtx);
 vertex* init_vertex(char *name, int id);
 int double_vertices(vertex ***v, size_t current_size);
-int dispatch_add_edge(char *params, network *net);
 int add_edge_to_vertex(vertex **src_vrtx, vertex **dest_vrtx, edge *e);
 
 /*commands.c*/

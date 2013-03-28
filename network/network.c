@@ -45,26 +45,26 @@ int add_vertex_to_network(network **net, vertex *vrtx) {
 
 }
 
-void get_prices_array(network *net, double **prices) {
-	int i, j, k;
+void get_prices_array(network *net, double *prices) {
+	int i, k;
 	vertex currVertex;
 	int counter = 0;
 	vertex *vertices = (vertex*) (net->vertices);
 	int from, to;
-	edge *currNeighList;
+	edge **currNeighList;
 
 	for (i = 0; i < net->num_of_vertices; i++) {
 		currVertex = vertices[i];
-		currNeighList = currVertex.adjacency_list;
+		currNeighList = (edge **)currVertex.adjacency_list;
 		for (k = 0; k < currVertex.deg; k++) {
 			from = currNeighList[k]->from;
 			to = currNeighList[k]->to;
 
 			if ((from == i) && (to > i)) {
-				*prices[counter + to - i] = currNeighList[k]->weight;
+				prices[counter + to - i] = currNeighList[k]->weight;
 			} else {
 				if ((to == i) && (from > i)) {
-					*prices[counter + from - i] = currNeighList[k]->weight;
+					prices[counter + from - i] = currNeighList[k]->weight;
 				}
 			}
 		}

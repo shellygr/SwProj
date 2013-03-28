@@ -1,4 +1,5 @@
 /* Coordinates the cluster module and the results module */
+#include "common.h"
 
 int analyze_network(network *net, double ghost_const, char *out_dir) {
 
@@ -61,4 +62,5 @@ int init_out_file(char **out_file, char *out_dir) {
 		send_perror("sprintf");
 		return 2;
 	}
+	return 0;
 }

@@ -1,6 +1,7 @@
+#include "common.h"
 #include "queue.h"
 
-void* init_tuple(int size, double score, int place, int diameter) {
+void* init_tuple(int size, double score, int place) {
 	tuple *ret = (tuple *) malloc(sizeof(tuple));
 	if (ret == NULL)
 		return NULL;

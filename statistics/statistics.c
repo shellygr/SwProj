@@ -1,12 +1,13 @@
 #include "queue.h"
 #include "common.h" // in an upper folder
+#include "structs.h"
 // this file should be called "statistics"
 
 int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,
-		int **longest_shortest, tuple ***clusterScores) {
+		int *longest_shortest, tuple ***clusterScores) {
 
 	int nV = net->num_of_vertices;
-	int numCols = nV * (nV - 1) / 2;
+	//int numCols = nV * (nV - 1) / 2;
 
 	edge **lst;
 	edge *currEdge;
@@ -18,8 +19,7 @@ int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,
 	int is_new = FALSE;
 	double sum = 0;
 
-	queue *q = NULL;
-	init_queue(q);
+	queue *q = init_queue();
 	if (q == NULL) {
 		return 2;
 	}
@@ -37,15 +37,15 @@ int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,
 		is_new = TRUE;
 	}
 
-	/*if (!(*colors[s->id])) { /* s is not white so make sure not overriding everything*/
-	enqueue(init_elem(s->id, NULL));
+	/*if (!(*colors[s->id])) {  s is not white so make sure not overriding everything*/
+	enqueue(q, init_elem(&(s->id), NULL));
 	distFunc[s->id] = 0;
 	currVertexId = s->id;
 
 	while (!is_empty(q)) {
-		currVertexId = dequeue(q);
+		currVertexId = *((int *)(dequeue(q)->content));
 		currVertex = get_vertex(currVertexId, net);
-		lst = currVertex->adjacency_list;
+		lst = (edge**)currVertex->adjacency_list;
 
 		for (i = 0; i < currVertex->deg; i++) {
 			currEdge = lst[i];
@@ -60,43 +60,43 @@ int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,
 			if (newVertexId < currVertexId) // why? not correct BFS.
 				continue;
 
-			elem* elm = init_elem(newVertexId, NULL);
+			elem* elm = init_elem(&newVertexId, NULL);
 			if (elm == NULL) {
 				return 2;
 			}
 
-			if (edges[id[currVertexId][newVertexId - currVertexId - 1]] == 1) {
+			if (edges[currVertexId][newVertexId - currVertexId - 1] == 1) { // note no use of ID as before! assert correction of logic
 				numEdges++;
 				sum += currEdge->weight;
 				//*realEdges[id[i][newVertexId - i - 1]] = 1; // why? we will overlap a lot
 				if ((get_vertex(newVertexId, net))->cluster_id != -1) // A check for cluster_id existing
-					(get_vertex(newVertexId, net))->cluster_id = cluster_id;
+					(get_vertex(newVertexId, net))->cluster_id = *cluster_id;
 			}
 
 			if (!(colors[newVertexId])) {
-				enqueue(elm);
+				enqueue(q, elm);
 				size++;
-				if (edges[id[currVertexId][newVertexId - currVertexId - 1]]
+				if (edges[currVertexId][newVertexId - currVertexId - 1]  // same as above! correction of logic
 						== 1) {
 					colors[newVertexId] = 1; // gray/black
-					distFunc[newVertexId] = (distFunc[currVertex]) + 1;
+					distFunc[newVertexId] = (distFunc[currVertexId]) + 1;
 				}
 			}
 		}
 
 		if (is_new) {
-			*clusterScores[cluster_id-1] = init_tuple(size, sum, cluster_id);
-			if (*clusterScores[cluster_id-1] == NULL) {
+			*clusterScores[*cluster_id-1] = init_tuple(size, sum, *cluster_id);
+			if (*clusterScores[*cluster_id-1] == NULL) {
 				return 2;
 			}
 		}
 	}
 
 	for (i = 0; i < nV; i++)
-		if ((get_vertex(i, net))->cluster_id == cluster_id)
-			if ((distFunc[i] > longest_shortest[cluster_id])
+		if ((get_vertex(i, net))->cluster_id == *cluster_id)
+			if ((distFunc[i] > longest_shortest[*cluster_id])
 					|| (distFunc[i] == -1)) /* each element of distfunc is a shortest path dist */
-				longest_shortest[cluster_id-1] = distFunc[i];
+				longest_shortest[*cluster_id-1] = distFunc[i];
 
 	if (is_new) {
 		(*cluster_id)++;
@@ -111,7 +111,7 @@ int bfs_all(network *net, int **id, int nV, int *realEdges,
 		tuple **clusterScores) {
 
 	int longest_shortest[nV]; /* Maintains longest shortest paths for each cluster. Max of nV clusters */
-	int size = 0;
+	//int size = 0;
 
 	int inv_dic[nV];
 	/*tuple clustersScores[nV]; Array of Tuples(not to lose the original ids)
@@ -128,8 +128,8 @@ int bfs_all(network *net, int **id, int nV, int *realEdges,
 		longest_shortest[i] = 0;
 
 	for (i = 0; i < nV; i++) {
-		if (bfs(net, get_vertex(net, i), realEdges, id, &cluster_id,
-				&longest_shortest, &clusterScores) == 2) {
+		if (bfs(net, get_vertex(i, net), &realEdges, id, &cluster_id,
+				longest_shortest, &clusterScores) == 2) {
 			return -1; // should free and clean
 		}
 	}
@@ -163,7 +163,7 @@ void calc_avg(network* net, tuple ***clusterScores, double *avg_within, double *
 		int *edges, int **id) {
 	int i, j;
 	int nV = net->num_of_vertices;
-	int count_edges[nV]; /* for within clusters */
+	//int count_edges[nV]; /* for within clusters */
 	int count_between = 0;
 	int count_within = 0;
 	edge **lst;
@@ -173,13 +173,13 @@ void calc_avg(network* net, tuple ***clusterScores, double *avg_within, double *
 
 	*avg_within = 0;
 	*avgBetween = 0;
-	for (i = 0; i < nV; i++) {
-		count_edges[i] = 0;
-	}
+//	for (i = 0; i < nV; i++) {
+//		count_edges[i] = 0;
+//	}
 
 	for (i = 0; i < nV; i++) {
 		currVertex = get_vertex(i, net);
-		lst = currVertex->adjacency_list;
+		lst = (edge **)currVertex->adjacency_list;
 		for (j = 0; j < currVertex->deg; j++) {
 			other_vertex_id = lst[j]->to;
 
@@ -188,19 +188,20 @@ void calc_avg(network* net, tuple ***clusterScores, double *avg_within, double *
 					double curr_weight = lst[j]->weight;
 					if (currVertex->cluster_id
 							== get_vertex(other_vertex_id, net)->cluster_id) { //within
-						int cluster_id = currVertex->cluster_id;
+				//		int cluster_id = currVertex->cluster_id;
 
-						*avg_within = ((*avg_within * (count_within++))
-								+ curr_weight) / count_within;
-
+						*avg_within = ((*avg_within * count_within)
+								+ curr_weight) / (count_within+1);
+						count_within++;
 					/*	double old_avg =
 								*(*clusterScores[cluster_id])->average_within;
 						*(*clusterScores[cluster_id])->averageWithin =
 								(((old_avg * (count_edges[cluster_id]++))
 										+ curr_weight) / count_edges[cluster_id]);*/
 					} else { // between
-						*avgBetween = ((*avgBetween * (count_between++))
-								+ curr_weight) / count_between;
+						*avgBetween = ((*avgBetween * (count_between))
+								+ curr_weight) / (count_between+1);
+						count_between++;
 					}
 				}
 			}

@@ -97,7 +97,7 @@ void get_real_edges(network *net, int *cluster_results, int **realEdges, int **I
 			if (curr_edge->to > curr_edge->from) {
 				int other_vertex_id = curr_edge->to;
 				if (cluster_results[IDs[i][other_vertex_id - i - 1]] == 1) {
-					*realEdges[IDs[i][other_vertex_id - i - 1]] = 1
+					*realEdges[IDs[i][other_vertex_id - i - 1]] = 1;
 				}
 			}
 		}

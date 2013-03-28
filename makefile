@@ -15,37 +15,49 @@ LDFLAGS+= -lxml2
 all: Cluster
 
 clean:
-	rm cluster_editing.o Cluster
+	rm *.o Cluster
 
-Cluster: main.o commands.o errors.o ui.o cluster/cluster_editing.o statistics/queue.o statistics/statistics.o statistics/tuple.o results/xml_writer.o results/results_file_writer.o
-	gcc -o Cluster main.o $(CFLAGS) $(LDFLAGS)
+Cluster: main.o commands.o errors.o ui.o cluster_editing.o queue.o statistics.o tuple.o xml_writer.o results_files_writer.o network.o edge.o vertex.o dynamic_array.o common.h structs.h
+	gcc -o Cluster main.o commands.o errors.o ui.o cluster_editing.o queue.o statistics.o tuple.o xml_writer.o results_files_writer.o network.o edge.o vertex.o dynamic_array.o common.h structs.h
 
-main.o: main.c common.h structs.h 
-	gcc -c main.c $(C_FLAGS)
+main.o: common.h structs.h 
+	gcc -c main.c $(CFLAGS) $(LDFLAGS)
 	
-commands.o: commands.c common.h structs.h 
-	gcc -I . -c operation/commands.c $(C_FLAGS)
+commands.o: common.h structs.h 
+	gcc -I . -c operation/commands.c $(CFLAGS) $(LDFLAGS)
 	
-errors.o: operation/errors.c common.h structs.h 
-	gcc -I . -c operation/errors.c $(C_FLAGS)
+errors.o: common.h structs.h 
+	gcc -I . -c operation/errors.c $(CFLAGS) $(LDFLAGS)
 	
-ui.o: operation/ui.c common.h structs.h 
-	gcc -I . -c operation/ui.c $(CFLAGS)
-	
-cluster_editing.o: cluster/cluster_editing.h cluster/cluster_editing.c
-	gcc -c cluster/cluster_editing.c $(CFLAGS)
-	
-queue.o: statistics/queue.c statistics/queue.h
-	gcc -c statistics/queue.c $(CFLAGS)
+ui.o: common.h structs.h 
+	gcc -I . -c operation/ui.c $(CFLAGS) $(LDFLAGS)
 
-statistics.o: statistics/statistics.c statistics/queue.h
-	gcc -c statistics/statistics.c $(CFLAGS)
+cluster_editing.o: common.h structs.h cluster/cluster_editing.h statistics/queue.h  
+	gcc -I . -I ./statistics -c cluster/cluster_editing.c $(CFLAGS) $(LDFLAGS)
 	
-tuple.o: statistics/tuple.c statistics/queue.h
-	gcc -c statistics/tuple.c $(CFLAGS)
+queue.o: statistics/queue.h common.h 
+	gcc -c -I . statistics/queue.c $(CFLAGS) $(LDFLAGS)
+
+statistics.o: statistics/queue.h common.h structs.h
+	gcc -c -I . statistics/statistics.c $(CFLAGS) $(LDFLAGS)
 	
-xml_writer.o: results/xml_writer.c xml.h io.h
-	gcc -c results/xml_writer.c $(CFLAGS)
+tuple.o: statistics/queue.h common.h
+	gcc -c -I . statistics/tuple.c $(CFLAGS) $(LDFLAGS)
 	
-results_file_writer.o: results/results_file_writer.c xml.h io.h
-	gcc -c results/results_file_writer.c $(CFLAGS)
+xml_writer.o: xml.h io.h common.h structs.h
+	gcc -c -I . results/xml_writer.c $(CFLAGS) $(LDFLAGS)
+	
+results_files_writer.o: xml.h io.h common.h structs.h queue.h
+	gcc -c -I . -I ./statistics results/results_files_writer.c $(CFLAGS) $(LDFLAGS)
+	
+network.o: structs.h
+		 gcc -I . -c network/network.c $(CFLAGS) $(LDFLAGS) 
+
+vertex.o: structs.h
+		 gcc -I . -c network/vertex.c $(CFLAGS) $(LDFLAGS)
+	
+edge.o: structs.h
+		 gcc -I . -c network/edge.c $(CFLAGS) $(LDFLAGS)
+
+dynamic_array.o: structs.h
+		 gcc -I . -c network/dynamic_array.c $(CFLAGS) $(LDFLAGS)

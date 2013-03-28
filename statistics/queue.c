@@ -1,3 +1,4 @@
+#include "common.h"
 #include "queue.h"
 
 void destroy_elem(elem* elm) {
@@ -14,8 +15,8 @@ elem* init_elem(void* content, elem* next) {
 	return elm;
 }
 
-void init_queue(queue *q) {
-	*q = (queue*) malloc(sizeof(queue));
+queue * init_queue() {
+	queue *q = (queue*) malloc(sizeof(queue));
 	if (q == NULL)
 		return NULL;
 	q->head = NULL;
@@ -53,10 +54,8 @@ elem* dequeue(queue* q) {
 }
 
 void enqueue(queue* q, elem* elm) {
-
 	(q->tail)->next = elm;
 	q->tail = elm;
-
 }
 
 int is_empty(queue* q) {

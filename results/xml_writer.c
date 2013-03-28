@@ -1,6 +1,11 @@
 #include "common.h"
+#include "structs.h"
 #include "io.h"
 #include "xml.h"
+
+int add_xml_node(xmlNodePtr *pRoot, char *label, int id, int cluster_id);
+int int_to_string(int x, char *str);
+int write_all(network *net, int **edges, int num_of_clusters, char *filename);
 
 int make_xml_skeleton(xmlDocPtr *pXMLDom, xmlNodePtr *pRoot) {
 	*pXMLDom = xmlNewDoc(BAD_CAST "1.0");
@@ -36,27 +41,33 @@ int write_all(network *net, int **edges, int num_of_clusters, char *filename) {
 
 	xmlDocPtr	pXMLDom = NULL;
 	xmlNodePtr	pRoot = NULL;
+	int			status = 0;
 
 	make_xml_skeleton(&pXMLDom, &pRoot);
 
 	if (write_all_nodes(net, num_of_clusters, &pRoot) == 2) {
-		return 2;
+		status = 2;
+		goto TERMINATE;
 	}
 
 	if (write_all_edges(net, edges, num_of_clusters, &pRoot) == 2) {
-		return 2;
+		status = 2;
+		goto TERMINATE;
 	}
 
-	xmlSaveFormatFileEnc(filename, pXMLDom, "UTF-8");
+	if (xmlSaveFileEnc(filename, pXMLDom, "UTF-8") == -1) {
+		status = 1;
+		goto TERMINATE;
+	}
 
+	TERMINATE:
 	xmlFreeDoc(pXMLDom);
 	xmlCleanupParser();
 	xmlMemoryDump();
 
-	return 0;
+	return status;
 
 }
-
 
 int write_all_edges(network *net, int **edges, int num_of_clusters, xmlNodePtr *pRoot) {
 	vertex **v = (vertex **) net->vertices;
@@ -72,7 +83,7 @@ int write_all_edges(network *net, int **edges, int num_of_clusters, xmlNodePtr *
 			}
 			if ((i < other_vertex_id) && (edges[i][other_vertex_id - i - 1] == 1)) {
 				if ((v[i]->cluster_id < num_of_clusters) && (v[other_vertex_id]->cluster_id < num_of_clusters)) {
-					int returned_value = add_edge(pRoot, v[i]->name, v[other_vertex_id]->name, i, other_vertex_id, arr_edges[j]->weight);
+					int returned_value = add_xml_edge(pRoot, v[i]->name, v[other_vertex_id]->name, i, other_vertex_id, arr_edges[j]->weight);
 					if (returned_value == 2) {
 						return 2;
 					}
@@ -84,18 +95,18 @@ int write_all_edges(network *net, int **edges, int num_of_clusters, xmlNodePtr *
 	return 0;
 }
 
-int add_edge(xmlNodePtr *pRoot, char *src_name, char *dst_name, int src, int dst, double weight) {
+int add_xml_edge(xmlNodePtr *pRoot, char *src_name, char *dst_name, int src, int dst, double weight) {
 	xmlNodePtr pEdge = xmlNewChild(*pRoot, NULL, BAD_CAST "edge", NULL);
 	xmlNodePtr pGraphics = NULL;
 
 	char *interaction = "(interaction detected)";
-	char *src_as_str = int_to_string(src);
-	char *dst_as_str = int_to_string(dst);
+	char *src_as_str = NULL;
+	char *dst_as_str = NULL;
 
 	char *label;
 	char cy_edgeLabel[15];
 
-	if ((src_as_str == NULL) || (dst_as_str == NULL)) {
+	if ( (int_to_string(src, src_as_str) == 2) || (int_to_string(dst, dst_as_str) == 2)) {
 		return 2;
 	}
 
@@ -135,7 +146,7 @@ int write_all_nodes(network *net, int num_of_clusters, xmlNodePtr *pRoot) {
 		int	id = v->id;
 		int cluster_id = v->cluster_id;
 		if (cluster_id <= num_of_clusters) {
-			if (add_node(pRoot, label, id, cluster_id) == 2) {
+			if (add_xml_node(pRoot, label, id, cluster_id) == 2) {
 				return 2;
 			}
 		}
@@ -144,11 +155,12 @@ int write_all_nodes(network *net, int num_of_clusters, xmlNodePtr *pRoot) {
 	return 0;
 }
 
-int add_node(xmlNodePtr *pRoot, char *label, int id, int cluster_id) {
+int add_xml_node(xmlNodePtr *pRoot, char *label, int id, int cluster_id) {
 	xmlNodePtr pNode = xmlNewChild(*pRoot, NULL, BAD_CAST "node", NULL);
 	xmlNodePtr pGraphics;
-	char *id_as_str = int_to_string(id);
-	if (id_as_str == NULL) {
+	char *id_as_str = NULL;
+
+	if (int_to_string(id, id_as_str) == 2) {
 		return 2;
 	}
 
@@ -166,14 +178,18 @@ int add_node(xmlNodePtr *pRoot, char *label, int id, int cluster_id) {
 	return 0;
 }
 
-char* int_to_string(int x) {
+int int_to_string(int x, char *str) {
 	// x is an int, so 4 bytes, max size 2^32, 4 billion - that's 10 digits.
-	char str[10];
+	str = (char *) malloc(10 * sizeof(char));
+	if (str == NULL) {
+		send_perror("malloc");
+		return 2;
+	}
 	if (sprintf(str, "%d", x) < 0) {
 		send_perror("sprintf");
-		return NULL;
+		return 2;
 	}
-	return str;
+	return 0;
 }
 
 char *color_from_cluster_id(int cluster_id) {

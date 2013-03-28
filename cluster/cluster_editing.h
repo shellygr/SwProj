@@ -12,12 +12,12 @@
 #include <string.h>
 #include "queue.h"
 
-#define LP_FILE "clustering_solution.lp"
 #define IS_VALUE_1(X) ((1 - X) < 0.00001)
 
 
 /* Include declaration for functions */
 void free_and_null (char **ptr);
+void free_array(int ***ptr, int size);
 int  cluster();
 
 #endif

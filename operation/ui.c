@@ -26,15 +26,17 @@ char* get_command(int *exit_status, FILE *f) {
 		}
 
 		if (*(command + i) == '\n') {
-			if (i > 0 && isspace(*(command + i - 1)))
+			if (i > 0 && isspace(*(command + i - 1))) {
 				*(command + i - 1) = '\0';
-			else
+			} else {
 				*(command + i) = '\0';
+			}
 			break;
 		}
 
-		if (i == 0 || !isspace(*(command + i)) || !isspace(*(command + i - 1)))
+		if ((i == 0) || (!isspace(*(command + i))) || (!isspace(*(command + i - 1)))) {
 			i++;
+		}
 
 		count++;
 	}

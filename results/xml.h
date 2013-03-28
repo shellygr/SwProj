@@ -19,3 +19,9 @@
 
 #define DESIRED_TOP_CLUSTERS 5
 
+
+// TODO consider moving back to xml_writer or the other one if unused in other places!
+int write_all_nodes(network *net, int num_of_clusters, xmlNodePtr *pRoot);
+char *color_from_cluster_id(int cluster_id);
+int add_xml_edge(xmlNodePtr *pRoot, char *src_name, char *dst_name, int src, int dst, double weight);
+int write_all_edges(network *net, int **edges, int num_of_clusters, xmlNodePtr *pRoot);

@@ -87,7 +87,7 @@ int check_string_is_double(char *str) {
 int check_not_max_num_of_vertices(network *net) {
 	return (net->num_of_vertices >= MAX_NUM_OF_VERTICES ? FALSE : TRUE);
 }
-*/
+ */
 
 int is_legal_id(int id, network *net) {
 	return (id >= net->num_of_vertices ? FALSE : TRUE);
@@ -105,7 +105,7 @@ int add_vertex(char *name, network *net) {
 	//	printf("%s",net->vertices[0].name);
 }
 
-int add_edge(int first_id, int second_id, double weight, network *net) {
+int add_xml_edge(int first_id, int second_id, double weight, network *net) {
 	vertex *src_vrtx = get_vertex(first_id, net);
 	vertex *dest_vrtx = get_vertex(second_id, net);
 	edge *e = NULL;
@@ -125,8 +125,8 @@ int dispatch_add_vertex(char *params, network *net) {
 		send_error(3);
 	else if (check_one_param(params + 1) == FALSE) {
 		send_error(14);
-	//} else if (check_not_max_num_of_vertices(net) == FALSE) {
-	//	send_error(6);
+		//} else if (check_not_max_num_of_vertices(net) == FALSE) {
+		//	send_error(6);
 	} else {
 		return add_vertex(params + 1, net);
 	}
@@ -146,7 +146,7 @@ int dispatch_add_edge(char *params, network *net) {
 		return 1;
 	} else if ((check_string_is_non_negative_integer(first_param) == FALSE)
 			|| (check_string_is_non_negative_integer(second_param) == FALSE)
-			|| check_string_is_dobule(third_param)) {
+			|| check_string_is_double(third_param)) {
 		send_error(5);
 		return 1;
 	} else {
@@ -161,7 +161,7 @@ int dispatch_add_edge(char *params, network *net) {
 			send_error(8);
 			return 1;
 		} else {
-			return add_edge(first_id, second_id, weight, net);
+			return add_xml_edge(first_id, second_id, weight, net);
 		}
 	}
 

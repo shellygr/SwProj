@@ -44,5 +44,5 @@ int check_edge_exists(vertex *src, vertex *to, edge *e) {
 		to = tmp;
 	}
 	return search_for_edge_in_incoming_edge_list((edge**) src->adjacency_list,
-			src->adjacency_list, e);
+			src->deg, e);
 }

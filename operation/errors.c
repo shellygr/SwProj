@@ -31,10 +31,10 @@ void send_error(int code) {
 	char *error_message = NULL;
 	if (code <= 0) {
 		switch (code) {
-			case -1: error_message = ERROR_CODE_m1;
-			case -2: error_message = ERROR_CODE_m2;
-			case -3: error_message = ERROR_CODE_m3;
-			case 0: error_message = ERROR_CODE_0;
+			case -1: error_message = ERROR_CODE_m1; break;
+			case -2: error_message = ERROR_CODE_m2; break;
+			case -3: error_message = ERROR_CODE_m3; break;
+			case 0: error_message = ERROR_CODE_0; break;
 		}
 		printf("%s", error_message);
 	} else {
