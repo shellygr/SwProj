@@ -1,9 +1,16 @@
 #include "common.h"
-#include "structs.h"
 #include "cluster_editing.h"
+#include "statistics.h"
 
 int 	nV; /* Shorthand for the number of vertices in the network */
 int 	numCols; /* Shorthand for the number of edges = variables we have */
+
+void update_globals(int nV_update, int numCols_update);
+int init_ids(int ***IDs);
+int solver(network *net, double ghost_const, char *out_file, double *avg_within, double *avgBetween, int *num_of_clusters, tuple **cluster_scores, int **realEdges, double *optimized);
+int get_statistics(network *net, double *avg_within, double *avgBetween, int *num_of_clusters, tuple **cluster_scores, int **IDs, int **realEdges, int *results);
+void get_real_edges(network *net, int *cluster_results, int **realEdges, int **IDs);
+
 
 void update_globals(int nV_update, int numCols_update) {
 	nV = nV_update;
@@ -26,11 +33,11 @@ int solver(network *net, double ghost_const, char *out_file, double *avg_within,
 	}
 
 	if (get_statistics(net, avg_within, avgBetween, num_of_clusters, cluster_scores, IDs, realEdges, results) == 2) {
-		free_array(&IDs);
+		free_array((void ***)&IDs, nV);
 		return 2;
 	}
 
-	free_array(&IDs);
+	free_array((void ***)&IDs, nV);
 
 	return 0;
 }
@@ -41,7 +48,7 @@ int get_statistics(network *net, double *avg_within, double *avgBetween, int *nu
 	// Get the real edges
 	for (i = 0; i < numCols; i++)
 		realEdges[i] = 0;
-	get_real_edges(net, results, realEdges);
+	get_real_edges(net, results, realEdges, IDs);
 
 	*num_of_clusters = bfs_all(net, IDs, nV, *realEdges, cluster_scores);
 
@@ -52,7 +59,7 @@ int get_statistics(network *net, double *avg_within, double *avgBetween, int *nu
 	// Set averages.
 	*avgBetween = 0;
 	*avg_within = 0;
-	calc_avg(net, cluster_scores, avg_within, avgBetween, *realEdges, IDs);
+	calc_avg(net, avg_within, avgBetween, *realEdges, IDs);
 
 	return 0;
 }
@@ -87,7 +94,7 @@ void get_real_edges(network *net, int *cluster_results, int **realEdges, int **I
 
 	for (i = 0; i < net->num_of_vertices; i++) {
 		vertex *v = get_vertex(i, net);
-		edge **lst = v->adjacency_list;
+		edge **lst = (edge**) v->adjacency_list;
 		int j;
 		for (j = 0; j < v->deg; j++) {
 			edge *curr_edge = lst[j];

@@ -47,7 +47,6 @@ int check_args(int argc, char **argv) {
 	return 0;
 }
 
-
 int build_network(network *net, FILE *input_file) {
 	char *command = NULL;
 	int status;
@@ -65,9 +64,7 @@ int build_network(network *net, FILE *input_file) {
 		if (command == NULL) {
 			continue;
 		}
-
 		action = get_action(command);
-
 		params = get_params(command, action);
 
 		if (action == 0) { /* No valid command */
@@ -80,7 +77,6 @@ int build_network(network *net, FILE *input_file) {
 			destroy_net(net);
 			return 1;
 		}
-
 		free(command);
 	}
 
@@ -122,10 +118,9 @@ int main(int argc, char **argv) {
 		exit(EXIT_FAILURE);
 	}
 
+	analyze_network(net, C, output_dir);
+
 	destroy_net(net);
 
 	return exit_status;
 }
-
-
-

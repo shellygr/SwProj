@@ -1,17 +1,21 @@
 /* Coordinates the cluster module and the results module */
 #include "common.h"
+#include "tuple.h"
+#include "statistics.h"
+
+int nV;
 
 int analyze_network(network *net, double ghost_const, char *out_dir) {
 
-	int 	nV		=	net->num_of_vertices; /* Shorthand for the number of vertices in the network */
 	int 	numCols =	nV * (nV - 1) / 2; /* Shorthand for the number of edges = variables we have */
 	char	*out_file;
-
 	int		num_of_clusters;
 	double	avg_within, avg_between;
 	tuple	**cluster_scores;
 	int 	realEdges[numCols]; // only edges that existed before, no ghosts
 	double	optimized_score;
+
+	nV		=	net->num_of_vertices; /* Shorthand for the number of vertices in the network */
 
 	if (init_cluster_scores(&cluster_scores) == 2) {
 		return 2;

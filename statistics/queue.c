@@ -1,5 +1,5 @@
 #include "common.h"
-#include "queue.h"
+#include "statistics.h"
 
 void destroy_elem(elem* elm) {
 	free(elm);

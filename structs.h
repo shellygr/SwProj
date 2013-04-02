@@ -32,6 +32,8 @@ struct network {
 
 typedef struct network network;
 
+int analyze_network(network *net, double ghost_const, char *out_dir);
+
 /*network.c*/
 void destroy_net(network *net);
 int init_network(network **net);
@@ -39,6 +41,7 @@ int add_vertex_to_network(network **net, vertex *vrtx);
 vertex* get_vertex(int id, network *net);
 void print_edges(network *net);
 void get_prices_array(network *net, double *prices);
+void get_id_array(int nV, int ***id);
 
 /*edge.c*/
 void init_edge(edge **e, int from, int to, double weight);
@@ -77,7 +80,3 @@ int add_edge(int first_id, int second_id, double weight, network *net);
 int dispatch_add_vertex(char *params, network *net);
 int dispatch_add_edge(char *params, network *net);
 int dispatch_command(int code, char *params, network *net);
-
-/*error.c*/
-void send_perror(char *func);
-void send_error(int code);

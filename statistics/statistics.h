@@ -1,3 +1,6 @@
+#include "structs.h"
+#include "tuple.h"
+
 struct elem {
 	void* content;
 	struct elem* next;
@@ -11,13 +14,7 @@ struct queue {
 };
 typedef struct queue queue;
 
-// TODO separate tuple from this h file.
-typedef struct tuple {
-	int size;
-	double score;
-	int place;
-	int diameter;
-} tuple;
+
 
 void destroy_elem(elem* elm);
 elem* init_elem(void* content, elem* next);
@@ -28,5 +25,7 @@ elem* dequeue(queue* q);
 void enqueue(queue* q, elem* elm);
 int is_empty(queue* q);
 
-void* init_tuple(int size, double score, int place);
-int compare_to(const void *a, const void *b);
+int bfs_all(network *net, int **id, int nV, int *realEdges,
+		tuple **clusterScores);
+void calc_avg(network* net, double *avg_within, double *avgBetween,
+		int *edges, int **id);

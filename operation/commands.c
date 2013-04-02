@@ -167,26 +167,7 @@ int dispatch_add_edge(char *params, network *net) {
 
 	return 1;
 }
-/*
- void dispatch_print(char *params,network *net) {
 
- if(check_all_whitespace(params))
- print(net, FALSE);
- else if(!isspace(params[0]))
- send_error(3);
- else
- send_error(34);
- }
-
- void dispatch_pr(char *params,network *net, int to_recalc) {
- if(check_all_whitespace(params))
- page_rank(net, to_recalc);
- else if(!isspace(params[0]))
- send_error(3);
- else
- send_error(44);
- }
- */
 int dispatch_command(int code, char *params, network *net) {
 	switch (code) {
 	case 1:

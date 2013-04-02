@@ -1,0 +1,63 @@
+VPATH = operation:results:cluster:statistics:..
+
+CPLEX=cplex125
+CPARCH=x86-64_sles10_4.1
+
+CFLAGS+= -ansi -pedantic-errors -Wall -g
+CFLAGS+= -I/usr/local/stow/${CPLEX}/lib/${CPLEX}/include
+CFLAGS+= -I/usr/include/libxml2
+CFLAGS+= -std=c99
+
+LDFLAGS+= -L/usr/local/stow/${CPLEX}/lib/${CPLEX}/lib/${CPARCH}/static_pic -lilocplex -lcplex 
+LDFLAGS+= -lm -lpthread -lgraph
+LDFLAGS+= -lxml2
+
+all: Cluster
+
+clean:
+	rm *.o Cluster
+
+Cluster: bin/main.o
+	gcc -o Cluster main.o $(CFLAGS) $(LDFLAGS)
+
+bin/main.o: commands.o
+	gcc -c main.c 
+	
+commands.o: common.h structs.h 
+	gcc -I . -c operation/commands.c
+	
+errors.o: common.h structs.h 
+	gcc -I . -c operation/errors.c 
+	
+ui.o: common.h structs.h 
+	gcc -I . -c operation/ui.c
+
+cluster_editing.o: common.h structs.h cluster/cluster_editing.h statistics/queue.h  
+	gcc -I . -I ./statistics -c cluster/cluster_editing.c 
+	
+queue.o: statistics/queue.h common.h 
+	gcc -c -I . statistics/queue.c
+
+statistics.o: statistics/queue.h common.h structs.h
+	gcc -c -I . statistics/statistics.c 
+	
+tuple.o: statistics/queue.h common.h
+	gcc -c -I . statistics/tuple.c
+	
+xml_writer.o: xml.h io.h common.h structs.h
+	gcc -c -I . results/xml_writer.c
+	
+results_files_writer.o: xml.h io.h common.h structs.h queue.h
+	gcc -c -I . -I ./statistics results/results_files_writer.c
+	
+network.o: structs.h
+		 gcc -I . -c network/network.c
+
+vertex.o: structs.h
+		 gcc -I . -c network/vertex.c
+	
+edge.o: structs.h
+		 gcc -I . -c network/edge.c
+
+dynamic_array.o: structs.h
+		 gcc -I . -c network/dynamic_array.c

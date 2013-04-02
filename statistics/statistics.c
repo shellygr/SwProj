@@ -1,6 +1,5 @@
-#include "queue.h"
+#include "statistics.h"
 #include "common.h" // in an upper folder
-#include "structs.h"
 // this file should be called "statistics"
 
 int bfs(network* net, vertex* s, int **edges, int **id, int *cluster_id,
@@ -159,7 +158,7 @@ int bfs_all(network *net, int **id, int nV, int *realEdges,
 
 //avg_between[nV], init it
 // calcs both within for each cluster separately and overall within, and between.
-void calc_avg(network* net, tuple ***clusterScores, double *avg_within, double *avgBetween,
+void calc_avg(network* net, double *avg_within, double *avgBetween,
 		int *edges, int **id) {
 	int i, j;
 	int nV = net->num_of_vertices;

@@ -112,8 +112,8 @@ int cluster(network *net, int **result, int **IDs, int *status, double C,
 	conIndices = (int**) malloc(nV * sizeof(int*));
 
 	if ((conIndices == NULL) || (offset == NULL)) {
-		free_array(&offset, nV);
-		free_array(&conIndices, nV);
+		free_array((void ***)&offset, nV);
+		free_array((void ***)&conIndices, nV);
 		goto TERMINATE;
 	}
 
@@ -122,8 +122,8 @@ int cluster(network *net, int **result, int **IDs, int *status, double C,
 		conIndices[i] = (int*) malloc(3 * (nV - i - 1) * sizeof(int));
 		offset[i] = (int*) malloc((nV - i - 1) * sizeof(int)); /*WAS:malloc(3*(nV-2)*size(int)).We need offset index for each variable Xij, i<j*/
 		if ((conIndices[i] == NULL) || (offset[i] == NULL)) {
-			free_array(&offset, i);
-			free_array(&conIndices, i);
+			free_array((void ***)&offset, i);
+			free_array((void ***)&conIndices, i);
 			goto TERMINATE;
 		}
 	}
@@ -266,8 +266,8 @@ int cluster(network *net, int **result, int **IDs, int *status, double C,
 	}
 
 	/* Free up the problem data arrays, if necessary. */
-	free_array(&offset, nV);
-	free_array(&conIndices, nV);
+	free_array((void ***)&offset, nV);
+	free_array((void ***)&conIndices, nV); // TODO all occurences are ints so convert prototype to int***
 
 	return 0;
 }

@@ -1,5 +1,5 @@
 #include "common.h"
-#include "queue.h"
+#include "tuple.h"
 
 void* init_tuple(int size, double score, int place) {
 	tuple *ret = (tuple *) malloc(sizeof(tuple));
