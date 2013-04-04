@@ -1,5 +1,4 @@
 #include "common.h"
-#include "structs.h"
 #include "io.h"
 #include "xml.h"
 

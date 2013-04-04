@@ -1,5 +1,4 @@
 #include "common.h"
-#include "structs.h"
 #include <sys/stat.h>
 
 char *input_dir, *output_dir, *filename;
@@ -10,6 +9,7 @@ int build_network(network *net, FILE *input_file);
 
 int check_args(int argc, char **argv) {
 	struct stat tmp;
+
 	/* Number of arguments*/
 	if (argc != 4) {
 		send_error(-3);
@@ -26,6 +26,8 @@ int check_args(int argc, char **argv) {
 
 	/* Create filename */
 	filename = (char *) malloc(strlen(input_dir) + strlen("network") + 1);
+	strncpy(filename, input_dir, strlen(input_dir) + 1); /* Including /0 */
+	strncat(filename, "network", strlen("network") +1 );
 	if (filename == NULL) {
 		send_perror("malloc");
 		return 2;
@@ -49,7 +51,7 @@ int check_args(int argc, char **argv) {
 
 int build_network(network *net, FILE *input_file) {
 	char *command = NULL;
-	int status;
+	int status = 0;
 
 	while (!feof(input_file)) {
 		int action;
@@ -64,6 +66,9 @@ int build_network(network *net, FILE *input_file) {
 		if (command == NULL) {
 			continue;
 		}
+
+		printf("%s\n", command);
+
 		action = get_action(command);
 		params = get_params(command, action);
 

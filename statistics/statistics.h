@@ -1,6 +1,3 @@
-#include "structs.h"
-#include "tuple.h"
-
 struct elem {
 	void* content;
 	struct elem* next;
@@ -25,7 +22,4 @@ elem* dequeue(queue* q);
 void enqueue(queue* q, elem* elm);
 int is_empty(queue* q);
 
-int bfs_all(network *net, int **id, int nV, int *realEdges,
-		tuple **clusterScores);
-void calc_avg(network* net, double *avg_within, double *avgBetween,
-		int *edges, int **id);
+

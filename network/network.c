@@ -1,5 +1,4 @@
 #include "common.h"
-#include "structs.h"
 
 /*	Initializes the pointer to a network struct to a valid initialized network with 0 vertices */
 int init_network(network **net) {
@@ -78,7 +77,7 @@ void get_id_array(int nV, int ***id) {
 	int counter = 0;
 	for (i = 0; i < nV; i++) {
 		for (j = 0; j < nV - i - 1; j++) {
-			*id[i][j] = counter++;
+			(*id)[i][j] = counter++;
 		}
 	}
 }

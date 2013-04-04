@@ -1,10 +1,10 @@
 #include "common.h"
-#include "structs.h"
 
-#define ERROR_CODE_m3 "Error: Should have 3 arguments: input folder, output folder, constant C"
-#define ERROR_CODE_m2 "Error: Folder name must end with a '/'"
-#define ERROR_CODE_m1 "Error: input folder must contain a file named 'network'"
-#define ERROR_CODE_0 "Error: Constant c must be 0 <= c <= 1"
+#define ERROR_CODE_m4 "Error: Weight must be a number in the form x.xxx... between 0 and 1\n"
+#define ERROR_CODE_m3 "Error: Should have 3 arguments: input folder, output folder, constant C\n"
+#define ERROR_CODE_m2 "Error: Folder name must end with a '/'\n"
+#define ERROR_CODE_m1 "Error: input folder must contain a file named 'network'\n"
+#define ERROR_CODE_0 "Error: Constant c must be 0 <= c <= 1\n"
 #define ERROR_CODE_1 "Error: command must have at least one character\n"
 #define ERROR_CODE_2 "Error: command length must be less than or equal to 500 characters\n"
 #define ERROR_CODE_3 "Error: command not found\n"
@@ -34,6 +34,7 @@ void send_error(int code) {
 			case -1: error_message = ERROR_CODE_m1; break;
 			case -2: error_message = ERROR_CODE_m2; break;
 			case -3: error_message = ERROR_CODE_m3; break;
+			case -4: error_message = ERROR_CODE_m4; break;
 			case 0: error_message = ERROR_CODE_0; break;
 		}
 		printf("%s", error_message);

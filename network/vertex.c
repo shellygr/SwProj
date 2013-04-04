@@ -1,5 +1,4 @@
 #include "common.h"
-#include "structs.h"
 
 // Vertex
 
@@ -54,6 +53,7 @@ int double_vertices(vertex ***v, size_t current_size) {
 
 int add_edge_to_vertex(vertex **src_vrtx, vertex **dest_vrtx, edge *e) {
 	//edge **in = (edge **)((*dest_vrtx)->incoming);
+	int status;
 
 	if (check_edge_exists(*src_vrtx, *dest_vrtx, e) == 1) {
 		send_error(9);
@@ -61,9 +61,12 @@ int add_edge_to_vertex(vertex **src_vrtx, vertex **dest_vrtx, edge *e) {
 		return 1;
 	}
 
-	(*src_vrtx)->deg++;
+	status = double_and_add(&((*dest_vrtx)->adjacency_list), &((*dest_vrtx)->deg), e)
+					|| double_and_add(&((*src_vrtx)->adjacency_list), &((*src_vrtx)->deg), e);
+//
+//	(*src_vrtx)->deg++;
+//	(*dest_vrtx)->deg++;
 
-	return double_and_add(&((*dest_vrtx)->adjacency_list), &((*dest_vrtx)->deg),e)
-			|| double_and_add(&((*src_vrtx)->adjacency_list), &((*src_vrtx)->deg), e);
+	return status;
 }
 

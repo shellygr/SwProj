@@ -12,7 +12,6 @@
 /* You may and should alter the file */
 
 #include "common.h"
-#include "structs.h"
 #include "cluster_editing.h"
 
 

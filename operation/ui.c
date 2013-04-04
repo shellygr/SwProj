@@ -1,5 +1,4 @@
 #include "common.h"
-#include "structs.h"
 
 char* get_command(int *exit_status, FILE *f) {
 	char *ret = NULL, *command = NULL;
@@ -14,11 +13,15 @@ char* get_command(int *exit_status, FILE *f) {
 
 	while (count < MAX_COMMAND_LENGTH) {
 		*(command + i) = fgetc(f);
-		if (*(command + i) == EOF) {
+		if ((*(command + i) == EOF) && (ferror(f))) {
 			send_perror("fgetc");
 			free(command);
 			*exit_status = 2;
 			return NULL;
+		}
+
+		if (feof(f)) {
+			break;
 		}
 
 		if ((first_non_whitespace == -1) && (!isspace(*(command + i)))) {
@@ -41,34 +44,36 @@ char* get_command(int *exit_status, FILE *f) {
 		count++;
 	}
 
-	if (first_non_whitespace == -1) {
-		send_error(1);
+	if (!feof(f)) {
+		if (first_non_whitespace == -1) {
+			send_error(1);
+			free(command);
+			return NULL;
+		}
+
+		if (count >= MAX_COMMAND_LENGTH) {
+			*(command + count - 1) = '\0';
+			free(command);
+			while (getchar() != '\n');
+			send_error(2);
+			return NULL;
+		}
+
+		// Build ret
+		if ((ret = malloc(strlen(command) + 1 - first_non_whitespace)) == NULL) {
+			free(command);
+			*exit_status = 2;
+			send_perror("malloc");
+			return NULL;
+		}
+
+		for (count = first_non_whitespace; count < strlen(command); ++count) {
+			*(ret + count - first_non_whitespace) = *(command + count);
+		}
+		*(ret + count - first_non_whitespace) = '\0';
+
 		free(command);
-		return NULL;
 	}
-
-	if (count >= MAX_COMMAND_LENGTH) {
-		*(command + count - 1) = '\0';
-		free(command);
-		while (getchar() != '\n');
-		send_error(2);
-		return NULL;
-	}
-
-	// Build ret
-	if ((ret = malloc(strlen(command) + 1 - first_non_whitespace)) == NULL) {
-		free(command);
-		*exit_status = 2;
-		send_perror("malloc");
-		return NULL;
-	}
-
-	for (count = first_non_whitespace; count < strlen(command); ++count) {
-		*(ret + count - first_non_whitespace) = *(command + count);
-	}
-	*(ret + count - first_non_whitespace) = '\0';
-
-	free(command);
 	return ret;
 }
 

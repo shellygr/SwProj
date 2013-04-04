@@ -20,7 +20,7 @@ void update_globals(int nV_update, int numCols_update) {
 int solver(network *net, double ghost_const, char *out_file, double *avg_within, double *avgBetween, int *num_of_clusters, tuple **cluster_scores, int **realEdges, double *optimized) {
 	int		status;
 	int 	results[numCols]; // edges indicator - includes ghosts
-	int 	**IDs;
+	int 	**IDs = NULL;
 
 	if (init_ids(&IDs) == 2) {
 		return 2;
@@ -74,10 +74,10 @@ int init_ids(int ***IDs) {
 	}
 
 	for (i = 0; i < nV; i++) {
-		*IDs[i] = (int*) malloc((nV - i - 1) * sizeof(int));
-		if (*IDs[i] == NULL) {
+		(*IDs)[i] = (int*) malloc((nV - i - 1) * sizeof(int));
+		if ((*IDs)[i] == NULL) {
 			for (; i >= 0; i--) {
-				free(*IDs[i]);
+				free((*IDs)[i]);
 			}
 			send_perror("malloc");
 			return 2;

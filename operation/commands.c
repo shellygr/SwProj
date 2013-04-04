@@ -1,5 +1,4 @@
 #include "common.h"
-#include "structs.h"
 
 /**
  #define COMMAND_CODE_1 add_vertex
@@ -68,17 +67,20 @@ int check_string_is_double(char *str) {
 
 	for (i = 0; i < strlen(str); i++) {
 		if (!isdigit(*(str + i))) {
-			if (flag == 1)
+			if (flag == 1) {
 				return FALSE;
-			if (*(str + i) == '.')
+			}
+			if (*(str + i) == '.') {
 				flag = 1;
-			else
+			} else {
 				return FALSE;
+			}
 		}
 	}
 	weight = strtod(str, &tmp);
-	if (weight == HUGE_VAL || strlen(tmp) > 0 || weight > 1 || weight < 0)
+	if (weight == HUGE_VAL || strlen(tmp) > 0  || weight > 1 || weight < 0) {
 		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -105,7 +107,7 @@ int add_vertex(char *name, network *net) {
 	//	printf("%s",net->vertices[0].name);
 }
 
-int add_xml_edge(int first_id, int second_id, double weight, network *net) {
+int add_edge(int first_id, int second_id, double weight, network *net) {
 	vertex *src_vrtx = get_vertex(first_id, net);
 	vertex *dest_vrtx = get_vertex(second_id, net);
 	edge *e = NULL;
@@ -145,9 +147,11 @@ int dispatch_add_edge(char *params, network *net) {
 		send_error(24);
 		return 1;
 	} else if ((check_string_is_non_negative_integer(first_param) == FALSE)
-			|| (check_string_is_non_negative_integer(second_param) == FALSE)
-			|| check_string_is_double(third_param)) {
+			|| (check_string_is_non_negative_integer(second_param) == FALSE)) {
 		send_error(5);
+		return 1;
+	} else if (!check_string_is_double(third_param)) {
+		send_error(-4);
 		return 1;
 	} else {
 		int first_id = atoi(first_param);
@@ -161,7 +165,7 @@ int dispatch_add_edge(char *params, network *net) {
 			send_error(8);
 			return 1;
 		} else {
-			return add_xml_edge(first_id, second_id, weight, net);
+			return add_edge(first_id, second_id, weight, net);
 		}
 	}
 

@@ -1,6 +1,5 @@
 /* Coordinates the cluster module and the results module */
 #include "common.h"
-#include "tuple.h"
 #include "statistics.h"
 
 int nV;
@@ -35,7 +34,7 @@ int analyze_network(network *net, double ghost_const, char *out_dir) {
 	}
 
 	if(output(net, realEdges, ghost_const,
-			optimized_score, num_of_clusters, avg_within, avg_between, *out_dir) == 2) {
+			optimized_score, num_of_clusters, avg_within, avg_between, cluster_scores, out_dir) == 2) {
 		free_and_null(cluster_scores);
 		free_and_null(out_file);
 		return 2;

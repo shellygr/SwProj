@@ -1,5 +1,4 @@
 #include "common.h"
-#include "structs.h"
 
 int is_power_two(int x) {
 	return ((x != 0) && !(x & (x - 1)));
@@ -31,5 +30,6 @@ int double_and_add(dynamic_array *arr, int *arr_size, void *element) {
 
 	//if (!is_power_two(*arr_size))
 	(*arr)[(*arr_size)++] = element;
+	printf("array size now %d\n", *arr_size);
 	return 0;
 }

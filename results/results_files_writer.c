@@ -1,6 +1,4 @@
 #include "common.h"
-#include "structs.h"
-#include "queue.h" // TODO don't forget to separate tuple! which is the only one needed, especially since no need to include statistics folder in makefile
 #include "io.h"
 
 int results_writer(network *net, int *edges, double ghost_const,
@@ -12,10 +10,11 @@ void print_edges_for_solution(FILE *file, network *net);
 
 // check fprintf!
 void print_network(FILE *file, network *net) {
+	int i;
 	vertex **v = (vertex **) net->vertices;
 
 	fprintf(file, "%d vertices:\n", net->num_of_vertices);
-	for (int i = 0; i < net->num_of_vertices; i++) {
+	for (i = 0; i < net->num_of_vertices; i++) {
 		fprintf(file, "%s %d\n", ((vertex*) v[i])->name, v[i]->cluster_id);
 	}
 	print_edges_for_solution(file, net);
@@ -25,7 +24,7 @@ void print_network(FILE *file, network *net) {
 void print_edges_for_solution(FILE *file, network *net) {
 	vertex **v = (vertex **) net->vertices;
 	int edges_count = 0;
-	int i;
+	int i, j;
 
 	// Search for edges:
 	for (i = 0; i < net->num_of_vertices; i++) {
@@ -34,9 +33,9 @@ void print_edges_for_solution(FILE *file, network *net) {
 
 	if (edges_count > 0) { // include count of edges
 		fprintf(file, "%d edges:\n", edges_count);
-		for (int i = 0; i < net->num_of_vertices; i++) {
+		for (i = 0; i < net->num_of_vertices; i++) {
 			edge **arr_edges = (edge **) v[i]->adjacency_list;
-			for (int j = 0; j < v[i]->deg; j++) {
+			for (j = 0; j < v[i]->deg; j++) {
 				int other_vertex_id;
 				if (arr_edges[j]->from == i) {
 					other_vertex_id = arr_edges[j]->to;
